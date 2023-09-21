@@ -3,7 +3,6 @@ package zpi.attraction.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import zpi.attraction.dao.AttractionDAO;
-import zpi.attraction.dao.AttractionDAOImpl;
 import zpi.attraction.entity.Attraction;
 
 import java.util.List;
