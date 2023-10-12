@@ -1,21 +1,21 @@
 package zpi.attraction.service;
 
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
-import zpi.attraction.dao.AttractionDAO;
 import zpi.attraction.entity.Attraction;
 
 import java.util.List;
-import java.util.Optional;
 
-import static java.util.Optional.ofNullable;
+public interface AttractionService {
 
-@Service
-@AllArgsConstructor
-public class AttractionService {
-    private final AttractionDAO attractionDAO;
+    // Save operation
+    Attraction saveAttraction(Attraction attraction);
 
-    public Optional<List<Attraction>> getAllAttractions(){
-        return ofNullable(attractionDAO.getAllAttractions());
-    }
+    // Read operation
+    List<Attraction> fetchAttractionList();
+
+    // Update operation
+    Attraction updateAttraction(Attraction attraction,
+                                Integer attractionId);
+
+    // Delete operation
+    void deleteAttractionById(Integer attractionId);
 }

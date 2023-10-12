@@ -2,11 +2,14 @@ package zpi.attraction.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
-@Getter
-@ToString
 @Entity
+@Getter
+@Setter
+@ToString
 @Table(name = "attractions")
 public class Attraction {
     @Id
