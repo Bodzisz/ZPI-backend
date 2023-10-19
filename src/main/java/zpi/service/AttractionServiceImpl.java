@@ -1,17 +1,12 @@
 package zpi.service;
 
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import zpi.repository.AttractionRepository;
 import zpi.entity.Attraction;
+import zpi.repository.AttractionRepository;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-
-import static java.util.Optional.ofNullable;
 
 @Service
 public class AttractionServiceImpl implements AttractionService{
