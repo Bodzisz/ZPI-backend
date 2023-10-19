@@ -1,6 +1,6 @@
-package zpi.attraction.service;
+package zpi.service;
 
-import zpi.attraction.entity.Attraction;
+import zpi.entity.Attraction;
 
 import java.util.List;
 

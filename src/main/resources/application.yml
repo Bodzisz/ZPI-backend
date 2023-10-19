@@ -1,0 +1,12 @@
+server:
+  servlet:
+    context-path: "/api/v1"
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/zpi
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: none

@@ -1,11 +1,11 @@
-package zpi.attraction.service;
+package zpi.service;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import zpi.attraction.repository.AttractionRepository;
-import zpi.attraction.entity.Attraction;
+import zpi.repository.AttractionRepository;
+import zpi.entity.Attraction;
 
 import java.util.List;
 import java.util.Objects;
@@ -14,11 +14,14 @@ import java.util.Optional;
 import static java.util.Optional.ofNullable;
 
 @Service
-@RequiredArgsConstructor
 public class AttractionServiceImpl implements AttractionService{
 
+    private final AttractionRepository attractionRepository;
+
     @Autowired
-    private AttractionRepository attractionRepository;
+    public AttractionServiceImpl(AttractionRepository attractionRepository) {
+        this.attractionRepository=attractionRepository;
+    }
     @Override
     public Attraction saveAttraction(Attraction attraction) {
         return attractionRepository.save(attraction);
@@ -42,12 +45,10 @@ public class AttractionServiceImpl implements AttractionService{
                     attraction.getTitle());
         }
 
-        if (Objects.nonNull(attraction.getAttractionType())
-                && !"".equalsIgnoreCase(
-                attraction.getAttractionType())) {
-            attractionDB.setAttractionType(
-                    attraction.getAttractionType());
+        if (Objects.nonNull(attraction.getAttractionType())) {
+            attractionDB.setAttractionType(attraction.getAttractionType());
         }
+
 
         if (Objects.nonNull(attraction.getDescription())
                 && !"".equalsIgnoreCase(
@@ -55,18 +56,16 @@ public class AttractionServiceImpl implements AttractionService{
             attractionDB.setDescription(
                     attraction.getDescription());
         }
-        if (Objects.nonNull(attraction.getCity())
-                && !"".equalsIgnoreCase(
-                attraction.getCity())) {
-            attractionDB.setCity(
-                    attraction.getCity());
+        if (Objects.nonNull(attraction.getDistrict().getCity())
+                && !"".equalsIgnoreCase(attraction.getDistrict().getCity())) {
+            attractionDB.getDistrict().setCity(attraction.getDistrict().getCity());
         }
-        if (Objects.nonNull(attraction.getPostalCode())
-                && !"".equalsIgnoreCase(
-                attraction.getPostalCode())) {
-            attractionDB.setPostalCode(
-                    attraction.getPostalCode());
+
+        if (Objects.nonNull(attraction.getDistrict().getPostalCode())
+                && !"".equalsIgnoreCase(attraction.getDistrict().getPostalCode())) {
+            attractionDB.getDistrict().setPostalCode(attraction.getDistrict().getPostalCode());
         }
+
         return attractionRepository.save(attractionDB);
     }
 

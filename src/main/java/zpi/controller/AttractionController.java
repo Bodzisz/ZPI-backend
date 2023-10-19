@@ -1,4 +1,4 @@
-package zpi.attraction.controller;
+package zpi.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -6,19 +6,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import zpi.attraction.entity.Attraction;
-import zpi.attraction.service.AttractionService;
-import zpi.attraction.service.AttractionServiceImpl;
+import zpi.entity.Attraction;
+import zpi.service.AttractionService;
+import zpi.service.AttractionServiceImpl;
 
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 public class AttractionController {
+    private final AttractionService attractionService;
+
     @Autowired
-    private AttractionService attractionService;
-
-
+    public AttractionController(AttractionService attractionService) {
+        this.attractionService = attractionService;
+    }
     @PostMapping("/attractions")
     public Attraction saveAttraction(@RequestBody Attraction attraction){
         return attractionService.saveAttraction(attraction);
