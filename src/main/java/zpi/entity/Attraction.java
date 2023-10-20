@@ -20,6 +20,10 @@ public class Attraction {
     @JoinColumn(name = "district_id", referencedColumnName = "district_id")
     private District district;
 
+    @ManyToOne
+    @JoinColumn(name = "city_id", referencedColumnName = "city_id")
+    private City city;
+
     @Column(name = "title", nullable = false)
     private String title;
 
@@ -42,8 +46,9 @@ public class Attraction {
     public Attraction() {
     }
 
-    public Attraction(District district, String title, AttractionType attractionType, String description, byte[] picture, Float xCoordinate, Float yCoordinate) {
+    public Attraction(District district, City city, String title, AttractionType attractionType, String description, byte[] picture, Float xCoordinate, Float yCoordinate) {
         this.district = district;
+        this.city = city;
         this.title = title;
         this.attractionType = attractionType;
         this.description = description;
