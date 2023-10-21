@@ -3,19 +3,19 @@ package zpi.service;
 import zpi.entity.Attraction;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AttractionService {
 
-    // Save operation
     Attraction saveAttraction(Attraction attraction);
 
-    // Read operation
     List<Attraction> fetchAttractionList();
 
-    // Update operation
     Attraction updateAttraction(Attraction attraction,
                                 Integer attractionId);
 
-    // Delete operation
     void deleteAttractionById(Integer attractionId);
+
+    Attraction findAttractionById(Integer attractionId);
+
 }

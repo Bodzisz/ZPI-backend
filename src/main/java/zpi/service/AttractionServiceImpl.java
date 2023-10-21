@@ -7,6 +7,7 @@ import zpi.entity.Attraction;
 import zpi.repository.AttractionRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -50,4 +51,10 @@ public class AttractionServiceImpl implements AttractionService {
     public void deleteAttractionById(Integer attractionId) {
         attractionRepository.deleteById(attractionId);
     }
+
+    @Override
+    public Attraction findAttractionById(Integer attractionId) {
+        return attractionRepository.findById(attractionId).get();
+    }
+
 }

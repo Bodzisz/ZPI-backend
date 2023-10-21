@@ -8,6 +8,7 @@ import zpi.entity.Attraction;
 import zpi.service.AttractionService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,5 +38,11 @@ public class AttractionController {
     public ResponseEntity<String> deleteAttractionById(@PathVariable("id") Integer attractionId) {
         attractionService.deleteAttractionById(attractionId);
         return new ResponseEntity<>("Deleted Successfully", HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Attraction> findAttractionById(@PathVariable("id") Integer attractionId) {
+        Attraction attraction = attractionService.findAttractionById(attractionId);
+        return new ResponseEntity<>(attraction, HttpStatus.OK);
     }
 }
