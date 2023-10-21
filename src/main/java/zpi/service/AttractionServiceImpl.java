@@ -1,22 +1,20 @@
 package zpi.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import zpi.entity.Attraction;
 import zpi.repository.AttractionRepository;
 
 import java.util.List;
-import java.util.Objects;
+
 
 @Service
-public class AttractionServiceImpl implements AttractionService{
+@RequiredArgsConstructor
+public class AttractionServiceImpl implements AttractionService {
 
     private final AttractionRepository attractionRepository;
 
-    @Autowired
-    public AttractionServiceImpl(AttractionRepository attractionRepository) {
-        this.attractionRepository=attractionRepository;
-    }
     @Override
     public Attraction saveAttraction(Attraction attraction) {
         return attractionRepository.save(attraction);
@@ -24,41 +22,25 @@ public class AttractionServiceImpl implements AttractionService{
 
     @Override
     public List<Attraction> fetchAttractionList() {
-        return (List<Attraction>)attractionRepository.findAll();
+        return attractionRepository.findAll();
     }
 
     @Override
     public Attraction updateAttraction(Attraction attraction, Integer attractionId) {
         Attraction attractionDB
                 = attractionRepository.findById(attractionId)
-                .get();
+                .orElseThrow(() -> new EntityNotFoundException("Attraction not found for ID: " + attractionId));
 
-        if (Objects.nonNull(attraction.getTitle())
-                && !"".equalsIgnoreCase(
-                attraction.getTitle())) {
-            attractionDB.setTitle(
-                    attraction.getTitle());
+        if(attraction.getTitle() != null && !attraction.getTitle().isEmpty()) {
+            attractionDB.setTitle(attraction.getTitle());
         }
 
-        if (Objects.nonNull(attraction.getAttractionType())) {
+        if(attraction.getAttractionType() != null) {
             attractionDB.setAttractionType(attraction.getAttractionType());
         }
 
-
-        if (Objects.nonNull(attraction.getDescription())
-                && !"".equalsIgnoreCase(
-                attraction.getDescription())) {
-            attractionDB.setDescription(
-                    attraction.getDescription());
-        }
-        if (Objects.nonNull(attraction.getDistrict().getCity())
-                && !"".equalsIgnoreCase(attraction.getDistrict().getCity())) {
-            attractionDB.getDistrict().setCity(attraction.getDistrict().getCity());
-        }
-
-        if (Objects.nonNull(attraction.getDistrict().getPostalCode())
-                && !"".equalsIgnoreCase(attraction.getDistrict().getPostalCode())) {
-            attractionDB.getDistrict().setPostalCode(attraction.getDistrict().getPostalCode());
+        if(attraction.getDescription() != null && !attraction.getDescription().isEmpty()) {
+            attractionDB.setDescription(attraction.getDescription());
         }
 
         return attractionRepository.save(attractionDB);

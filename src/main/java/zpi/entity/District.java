@@ -1,14 +1,11 @@
 package zpi.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
+
 
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
 @Table(name = "districts")
 public class District {
     @Id
@@ -19,18 +16,10 @@ public class District {
     @Column(name = "district_name", nullable = false)
     private String districtName;
 
-    @Column(name = "city", nullable = false)
-    private String city;
-
-    @Column(name = "postal_code", nullable = false)
-    private String postalCode;
-
     public District() {
     }
 
-    public District(String districtName, String city, String postalCode) {
+    public District(String districtName, City city) {
         this.districtName = districtName;
-        this.city = city;
-        this.postalCode = postalCode;
     }
 }

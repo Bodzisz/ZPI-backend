@@ -1,14 +1,13 @@
 package zpi.entity;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
 @Table(name = "attractions")
 public class Attraction {
     @Id
@@ -24,13 +23,16 @@ public class Attraction {
     @JoinColumn(name = "city_id", referencedColumnName = "city_id")
     private City city;
 
-    @Column(name = "title", nullable = false)
-    private String title;
-
     @ManyToOne
+    @NotNull(message = "AttractionType cannot be null")
     @JoinColumn(name = "type_id", referencedColumnName = "type_id")
     private AttractionType attractionType;
 
+    @NotBlank(message = "Title cannot be blank")
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @NotBlank(message = "Description cannot be blank")
     @Column(name = "description")
     private String description;
 

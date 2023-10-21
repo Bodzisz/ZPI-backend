@@ -1,6 +1,8 @@
 package zpi.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zpi.entity.Attraction;
 import zpi.service.AttractionService;
@@ -8,30 +10,32 @@ import zpi.service.AttractionService;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/attractions")
 public class AttractionController {
     private final AttractionService attractionService;
 
-    @Autowired
-    public AttractionController(AttractionService attractionService) {
-        this.attractionService = attractionService;
-    }
-    @PostMapping("/attractions")
-    public Attraction saveAttraction(@RequestBody Attraction attraction){
-        return attractionService.saveAttraction(attraction);
-    }
-    @GetMapping("/attractions")
-    public List<Attraction> fetchAttractionList(){
-        return attractionService.fetchAttractionList();
+    @PostMapping
+    public ResponseEntity<Attraction> saveAttraction(@RequestBody Attraction attraction) {
+        Attraction savedAttraction = attractionService.saveAttraction(attraction);
+        return new ResponseEntity<>(savedAttraction, HttpStatus.CREATED);
     }
 
-    @PutMapping("/attractions/{id}")
-    public Attraction updateAttraction(@RequestBody Attraction attraction, @PathVariable("id")Integer attractionId){
-        return attractionService.updateAttraction(attraction,attractionId);
+    @GetMapping
+    public ResponseEntity<List<Attraction>> fetchAttractionList() {
+        List<Attraction> attractions = attractionService.fetchAttractionList();
+        return new ResponseEntity<>(attractions, HttpStatus.OK);
     }
 
-    @DeleteMapping("/attractions/{id}")
-    public String deleteAttractionById(@PathVariable("id") Integer attractionId){
+    @PutMapping("/{id}")
+    public ResponseEntity<Attraction> updateAttraction(@RequestBody Attraction attraction, @PathVariable("id") Integer attractionId) {
+        Attraction updatedAttraction = attractionService.updateAttraction(attraction, attractionId);
+        return new ResponseEntity<>(updatedAttraction, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteAttractionById(@PathVariable("id") Integer attractionId) {
         attractionService.deleteAttractionById(attractionId);
-        return "Deleted Successfully";
+        return new ResponseEntity<>("Deleted Successfully", HttpStatus.OK);
     }
 }
