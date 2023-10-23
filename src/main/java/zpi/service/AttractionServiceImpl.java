@@ -8,7 +8,6 @@ import zpi.repository.AttractionRepository;
 
 import java.util.List;
 
-
 @Service
 @RequiredArgsConstructor
 public class AttractionServiceImpl implements AttractionService {
@@ -27,27 +26,25 @@ public class AttractionServiceImpl implements AttractionService {
 
     @Override
     public Attraction updateAttraction(Attraction attraction, Integer attractionId) {
-        Attraction attractionDB
-                = attractionRepository.findById(attractionId)
-                .orElseThrow(() -> new EntityNotFoundException("Attraction not found for ID: " + attractionId));
-
-        if(attraction.getTitle() != null && !attraction.getTitle().isEmpty()) {
-            attractionDB.setTitle(attraction.getTitle());
+        if (!attractionRepository.existsById(attractionId)) {
+            throw new EntityNotFoundException("Attraction not found for ID: " + attractionId);
         }
-
-        if(attraction.getAttractionType() != null) {
-            attractionDB.setAttractionType(attraction.getAttractionType());
-        }
-
-        if(attraction.getDescription() != null && !attraction.getDescription().isEmpty()) {
-            attractionDB.setDescription(attraction.getDescription());
-        }
-
-        return attractionRepository.save(attractionDB);
+        attraction.setId(attractionId);
+        return attractionRepository.save(attraction);
     }
 
     @Override
     public void deleteAttractionById(Integer attractionId) {
+        if (!attractionRepository.existsById(attractionId)) {
+            throw new EntityNotFoundException("Attraction not found for ID: " + attractionId);
+        }
         attractionRepository.deleteById(attractionId);
     }
+
+    @Override
+    public Attraction findAttractionById(Integer attractionId) {
+        return attractionRepository.findById(attractionId)
+                .orElseThrow(() -> new EntityNotFoundException("Attraction not found for ID: " + attractionId));
+    }
+
 }
