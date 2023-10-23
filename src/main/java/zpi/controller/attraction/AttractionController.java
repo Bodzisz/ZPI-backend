@@ -1,7 +1,6 @@
-package zpi.controller;
+package zpi.controller.attraction;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +11,10 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/attractions")
 public class AttractionController {
+
     private final AttractionService attractionService;
 
     @PostMapping
@@ -32,33 +31,19 @@ public class AttractionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Attraction> updateAttraction(@Valid @RequestBody Attraction attraction, @PathVariable("id") Integer attractionId) {
-        try {
-            Attraction updatedAttraction = attractionService.updateAttraction(attraction, attractionId);
-            return new ResponseEntity<>(updatedAttraction, HttpStatus.OK);
-        } catch (Exception e) {
-            log.error(getClass().getName(), e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Attraction updatedAttraction = attractionService.updateAttraction(attraction, attractionId);
+        return new ResponseEntity<>(updatedAttraction, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAttractionById(@PathVariable("id") Integer attractionId) {
-        try {
-            attractionService.deleteAttractionById(attractionId);
-            return new ResponseEntity<>("Deleted Successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        attractionService.deleteAttractionById(attractionId);
+        return new ResponseEntity<>("Deleted Successfully", HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Attraction> findAttractionById(@PathVariable("id") Integer attractionId) {
-        try {
-            Attraction attraction = attractionService.findAttractionById(attractionId);
-            return new ResponseEntity<>(attraction, HttpStatus.OK);
-        } catch (Exception e) {
-            log.error(getClass().getName(), e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Attraction attraction = attractionService.findAttractionById(attractionId);
+        return new ResponseEntity<>(attraction, HttpStatus.OK);
     }
 }
