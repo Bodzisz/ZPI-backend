@@ -1,4 +1,4 @@
-package zpi.controller;
+package zpi.controller.attraction;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -7,17 +7,18 @@ import org.springframework.web.bind.annotation.*;
 import zpi.entity.Attraction;
 import zpi.service.AttractionService;
 
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/attractions")
 public class AttractionController {
+
     private final AttractionService attractionService;
 
     @PostMapping
-    public ResponseEntity<Attraction> saveAttraction(@RequestBody Attraction attraction) {
+    public ResponseEntity<Attraction> saveAttraction(@Valid @RequestBody Attraction attraction) {
         Attraction savedAttraction = attractionService.saveAttraction(attraction);
         return new ResponseEntity<>(savedAttraction, HttpStatus.CREATED);
     }
@@ -29,7 +30,7 @@ public class AttractionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Attraction> updateAttraction(@RequestBody Attraction attraction, @PathVariable("id") Integer attractionId) {
+    public ResponseEntity<Attraction> updateAttraction(@Valid @RequestBody Attraction attraction, @PathVariable("id") Integer attractionId) {
         Attraction updatedAttraction = attractionService.updateAttraction(attraction, attractionId);
         return new ResponseEntity<>(updatedAttraction, HttpStatus.OK);
     }
@@ -40,9 +41,22 @@ public class AttractionController {
         return new ResponseEntity<>("Deleted Successfully", HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<Attraction> findAttractionById(@PathVariable("id") Integer attractionId) {
         Attraction attraction = attractionService.findAttractionById(attractionId);
         return new ResponseEntity<>(attraction, HttpStatus.OK);
     }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<Attraction>> listAttractions(
+            @RequestParam(required = false) List<String> cities,
+            @RequestParam(required = false) List<String> districts,
+            @RequestParam(required = false) List<String> types) {
+
+        List<Attraction> attractions = attractionService.getAttractionList(cities, districts, types);
+        return ResponseEntity.ok(attractions);
+    }
+
+
+
 }

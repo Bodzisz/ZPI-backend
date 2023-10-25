@@ -3,7 +3,6 @@ package zpi.service;
 import zpi.entity.Attraction;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface AttractionService {
 
@@ -18,4 +17,5 @@ public interface AttractionService {
 
     Attraction findAttractionById(Integer attractionId);
 
+    List<Attraction> getAttractionList(List<String> cities, List<String> districts, List<String> types);
 }
