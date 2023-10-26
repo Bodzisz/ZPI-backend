@@ -49,14 +49,21 @@ public class AttractionController {
 
     @GetMapping("/list")
     public ResponseEntity<List<Attraction>> listAttractions(
-            @RequestParam(required = false) List<String> cities,
-            @RequestParam(required = false) List<String> districts,
-            @RequestParam(required = false) List<String> types) {
+            @RequestParam(required = false, defaultValue = "") List<String> cities,
+            @RequestParam(required = false, defaultValue = "") List<String> districts,
+            @RequestParam(required = false, defaultValue = "") List<String> types) {
 
-        List<Attraction> attractions = attractionService.getAttractionList(cities, districts, types);
-        return ResponseEntity.ok(attractions);
+        List<Attraction> attractions = attractionService.getAttractionList(
+                cities,
+                districts,
+                types);
+
+        if (attractions.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(attractions, HttpStatus.OK);
+        }
     }
-
 
 
 }

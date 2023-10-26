@@ -6,10 +6,9 @@ import org.springframework.stereotype.Service;
 import zpi.entity.Attraction;
 import zpi.repository.AttractionRepository;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -52,27 +51,22 @@ public class AttractionServiceImpl implements AttractionService {
 
     @Override
     public List<Attraction> getAttractionList(List<String> cities, List<String> districts, List<String> types) {
-        Set<Attraction> attractionsSet = new HashSet<>();
 
-        if (cities != null && !cities.isEmpty()) {
-            for (String city : cities) {
-                attractionsSet.addAll(attractionRepository.findByCityName(city));
-            }
-        }
+        Predicate<Attraction> cityPredicate = attraction ->
+                cities.isEmpty() || cities.contains(attraction.getCity().getCityName());
 
-        if (districts != null && !districts.isEmpty()) {
-            for (String district : districts) {
-                attractionsSet.addAll(attractionRepository.findByDistrictName(district));
-            }
-        }
+        Predicate<Attraction> districtPredicate = attraction ->
+                districts.isEmpty() || districts.contains(attraction.getDistrict().getDistrictName());
 
-        if (types != null && !types.isEmpty()) {
-            for (String type : types) {
-                attractionsSet.addAll(attractionRepository.findByType(type));
-            }
-        }
-        return new ArrayList<>(attractionsSet);
+        Predicate<Attraction> typePredicate = attraction ->
+                types.isEmpty() || types.contains(attraction.getAttractionType().getAttractionType());
+
+        Predicate<Attraction> combinedPredicate = cityPredicate.and(districtPredicate).and(typePredicate);
+
+        return attractionRepository.findAll()
+                .stream()
+                .filter(combinedPredicate)
+                .collect(Collectors.toList());
     }
-
 
 }
