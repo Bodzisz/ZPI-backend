@@ -41,7 +41,7 @@ public class AttractionController {
         return new ResponseEntity<>("Deleted Successfully", HttpStatus.OK);
     }
 
-    @GetMapping("/id/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Attraction> findAttractionById(@PathVariable("id") Integer attractionId) {
         Attraction attraction = attractionService.findAttractionById(attractionId);
         return new ResponseEntity<>(attraction, HttpStatus.OK);
@@ -49,9 +49,9 @@ public class AttractionController {
 
     @GetMapping("/list")
     public ResponseEntity<List<Attraction>> listAttractions(
-            @RequestParam(required = false, defaultValue = "") List<String> cities,
-            @RequestParam(required = false, defaultValue = "") List<String> districts,
-            @RequestParam(required = false, defaultValue = "") List<String> types) {
+            @RequestParam(required = false) List<String> cities,
+            @RequestParam(required = false) List<String> districts,
+            @RequestParam(required = false) List<String> types) {
 
         List<Attraction> attractions = attractionService.getAttractionList(
                 cities,
