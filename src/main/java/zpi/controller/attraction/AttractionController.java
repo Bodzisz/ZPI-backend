@@ -53,17 +53,21 @@ public class AttractionController {
             @RequestParam(required = false) List<String> districts,
             @RequestParam(required = false) List<String> types) {
 
-        List<Attraction> attractions = attractionService.getAttractionList(
-                cities,
-                districts,
-                types);
+        List<Attraction> attractions = attractionService.getAttractionList(cities, districts, types);
 
-        if (attractions.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(attractions, HttpStatus.OK);
-        }
+        return attractions.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                : new ResponseEntity<>(attractions, HttpStatus.OK);
     }
 
+    @GetMapping("/{id}/distance")
+    public ResponseEntity<Double> getDistance(
+            @PathVariable("id") Integer attractionId,
+            @RequestParam Float xCoordinate,
+            @RequestParam Float yCoordinate) {
 
+        Double distance = attractionService
+                .getDistanceToAttraction(attractionId, xCoordinate, yCoordinate);
+
+        return new ResponseEntity<>(distance, HttpStatus.OK);
+    }
 }

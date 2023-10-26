@@ -2,6 +2,7 @@ package zpi.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.springframework.stereotype.Service;
 import zpi.entity.Attraction;
 import zpi.repository.AttractionRepository;
@@ -67,6 +68,15 @@ public class AttractionServiceImpl implements AttractionService {
                 .stream()
                 .filter(combinedPredicate)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public double getDistanceToAttraction(Integer attractionId, Float xCoordinate, Float yCoordinate) {
+        Attraction attraction = findAttractionById(attractionId);
+        Vector2D attractionLocalisation = new Vector2D(attraction.getXCoordinate(), attraction.getYCoordinate());
+        Vector2D userLocalisation = new Vector2D(xCoordinate, yCoordinate);
+
+        return attractionLocalisation.distance(userLocalisation);
     }
 
 }
