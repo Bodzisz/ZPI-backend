@@ -54,13 +54,13 @@ public class AttractionServiceImpl implements AttractionService {
     public List<Attraction> getAttractionList(List<String> cities, List<String> districts, List<String> types) {
 
         Predicate<Attraction> cityPredicate = attraction ->
-                cities.isEmpty() || cities.contains(attraction.getCity().getCityName());
+                (cities == null || cities.isEmpty()) || cities.contains(attraction.getCity().getCityName());
 
         Predicate<Attraction> districtPredicate = attraction ->
-                districts.isEmpty() || districts.contains(attraction.getDistrict().getDistrictName());
+                (districts == null || districts.isEmpty()) || districts.contains(attraction.getDistrict().getDistrictName());
 
         Predicate<Attraction> typePredicate = attraction ->
-                types.isEmpty() || types.contains(attraction.getAttractionType().getAttractionType());
+                (types == null || types.isEmpty()) || types.contains(attraction.getAttractionType().getAttractionType());
 
         Predicate<Attraction> combinedPredicate = cityPredicate.and(districtPredicate).and(typePredicate);
 
@@ -69,7 +69,6 @@ public class AttractionServiceImpl implements AttractionService {
                 .filter(combinedPredicate)
                 .collect(Collectors.toList());
     }
-
     @Override
     public double getDistanceToAttraction(Integer attractionId, Float xCoordinate, Float yCoordinate) {
         Attraction attraction = findAttractionById(attractionId);
