@@ -46,4 +46,21 @@ public class AttractionController {
         Attraction attraction = attractionService.findAttractionById(attractionId);
         return new ResponseEntity<>(attraction, HttpStatus.OK);
     }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<Attraction>> listAttractions(
+            @RequestParam(required = false) List<String> cities,
+            @RequestParam(required = false) List<String> districts,
+            @RequestParam(required = false) List<String> types) {
+
+        List<Attraction> attractions = attractionService.getAttractionList(
+                cities,
+                districts,
+                types);
+
+        return attractions.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                : new ResponseEntity<>(attractions, HttpStatus.OK);
+    }
+
+
 }

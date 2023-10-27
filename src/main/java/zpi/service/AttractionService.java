@@ -17,4 +17,5 @@ public interface AttractionService {
 
     Attraction findAttractionById(Integer attractionId);
 
+    List<Attraction> getAttractionList(List<String> cities, List<String> districts, List<String> types);
 }
