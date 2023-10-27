@@ -76,7 +76,11 @@ public class AttractionServiceImpl implements AttractionService {
         Vector2D attractionLocalisation = new Vector2D(attraction.getXCoordinate(), attraction.getYCoordinate());
         Vector2D userLocalisation = new Vector2D(xCoordinate, yCoordinate);
 
-        return attractionLocalisation.distance(userLocalisation);
+        return convertToKilometers(attractionLocalisation.distance(userLocalisation));
+    }
+
+    public double convertToKilometers(double distance) {
+        return Math.round(distance * 10000.0) / 100.0;
     }
 
 }
