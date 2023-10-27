@@ -7,6 +7,7 @@ import zpi.entity.Attraction;
 import zpi.repository.AttractionRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -17,12 +18,12 @@ public class AttractionServiceImpl implements AttractionService {
     private final AttractionRepository attractionRepository;
 
     @Override
-    public Attraction saveAttraction(Attraction attraction) {
+    public Attraction createAttraction(Attraction attraction) {
         return attractionRepository.save(attraction);
     }
 
     @Override
-    public List<Attraction> fetchAttractionList() {
+    public List<Attraction> getAllAttractions() {
         return attractionRepository.findAll();
     }
 
@@ -44,9 +45,13 @@ public class AttractionServiceImpl implements AttractionService {
     }
 
     @Override
-    public Attraction findAttractionById(Integer attractionId) {
-        return attractionRepository.findById(attractionId)
-                .orElseThrow(() -> new EntityNotFoundException("Attraction not found for ID: " + attractionId));
+    public Attraction getAttractionById(Integer attractionId) {
+        Optional<Attraction> attraction = attractionRepository.findById(attractionId);
+        if(attraction.isPresent()) {
+            return attraction.get();
+        }else {
+            throw new EntityNotFoundException("Attraction not found for ID: " + attractionId);
+        }
     }
 
     @Override
