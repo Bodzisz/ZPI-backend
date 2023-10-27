@@ -50,7 +50,10 @@ public class AttractionServiceImpl implements AttractionService {
     }
 
     @Override
-    public List<Attraction> getAttractionList(List<String> cities, List<String> districts, List<String> types) {
+    public List<Attraction> getAttractionList(List<String> titles, List<String> cities, List<String> districts, List<String> types) {
+
+        Predicate<Attraction> titlePredicate = attraction ->
+                (titles == null || titles.isEmpty()) || titles.contains(attraction.getTitle());
 
         Predicate<Attraction> cityPredicate = attraction ->
                 (cities == null || cities.isEmpty()) || cities.contains(attraction.getCity().getCityName());
@@ -61,7 +64,7 @@ public class AttractionServiceImpl implements AttractionService {
         Predicate<Attraction> typePredicate = attraction ->
                 (types == null || types.isEmpty()) || types.contains(attraction.getAttractionType().getAttractionType());
 
-        Predicate<Attraction> combinedPredicate = cityPredicate.and(districtPredicate).and(typePredicate);
+        Predicate<Attraction> combinedPredicate = titlePredicate.and(cityPredicate).and(districtPredicate).and(typePredicate);
 
         return attractionRepository.findAll()
                 .stream()

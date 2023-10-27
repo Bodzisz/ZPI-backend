@@ -49,11 +49,13 @@ public class AttractionController {
 
     @GetMapping("/list")
     public ResponseEntity<List<Attraction>> listAttractions(
+            @RequestParam(required = false) List<String> titles,
             @RequestParam(required = false) List<String> cities,
             @RequestParam(required = false) List<String> districts,
             @RequestParam(required = false) List<String> types) {
 
         List<Attraction> attractions = attractionService.getAttractionList(
+                titles,
                 cities,
                 districts,
                 types);
