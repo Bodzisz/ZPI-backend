@@ -58,11 +58,8 @@ public class AttractionController {
                 districts,
                 types);
 
-        if (attractions.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(attractions, HttpStatus.OK);
-        }
+        return attractions.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                : new ResponseEntity<>(attractions, HttpStatus.OK);
     }
 
 
