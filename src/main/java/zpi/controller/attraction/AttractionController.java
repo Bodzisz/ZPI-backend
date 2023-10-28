@@ -76,5 +76,16 @@ public class AttractionController {
                 : new ResponseEntity<>(attractionResponse, HttpStatus.OK);
     }
 
+    @GetMapping("/{id}/distance")
+    public ResponseEntity<Double> getDistance(
+            @PathVariable("id") Integer attractionId,
+            @RequestParam Float xCoordinate,
+            @RequestParam Float yCoordinate) {
+
+        Double distance = attractionService
+                .getDistanceToAttraction(attractionId, xCoordinate, yCoordinate);
+
+        return new ResponseEntity<>(distance, HttpStatus.OK);
+    }
 
 }
