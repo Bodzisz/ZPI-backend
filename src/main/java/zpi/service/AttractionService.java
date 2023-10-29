@@ -23,4 +23,5 @@ public interface AttractionService {
 
     double getDistanceToAttraction(Integer attractionId, Float xCoordinate, Float yCoordinate);
 
+    List<Attraction> getAttractionList(List<String> cities, List<String> districts, List<String> types);
 }
