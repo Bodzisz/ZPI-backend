@@ -49,9 +49,9 @@ public class AttractionServiceImpl implements AttractionService {
     @Override
     public Attraction getAttractionById(Integer attractionId) {
         Optional<Attraction> attraction = attractionRepository.findById(attractionId);
-        if(attraction.isPresent()) {
+        if (attraction.isPresent()) {
             return attraction.get();
-        }else {
+        } else {
             throw new EntityNotFoundException("Attraction not found for ID: " + attractionId);
         }
     }
@@ -83,18 +83,6 @@ public class AttractionServiceImpl implements AttractionService {
                 .stream()
                 .filter(combinedPredicate)
                 .collect(Collectors.toList());
-    }
-    @Override
-    public double getDistanceToAttraction(Integer attractionId, Float xCoordinate, Float yCoordinate) {
-        Attraction attraction = findAttractionById(attractionId);
-        Vector2D attractionLocalisation = new Vector2D(attraction.getXCoordinate(), attraction.getYCoordinate());
-        Vector2D userLocalisation = new Vector2D(xCoordinate, yCoordinate);
-
-        return convertToKilometers(attractionLocalisation.distance(userLocalisation));
-    }
-
-    public double convertToKilometers(double distance) {
-        return Math.round(distance * 10000.0) / 100.0;
     }
 
     @Override

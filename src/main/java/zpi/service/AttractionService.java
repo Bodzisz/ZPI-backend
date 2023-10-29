@@ -19,9 +19,9 @@ public interface AttractionService {
     Attraction getAttractionById(Integer attractionId);
 
     AttractionDto getAttractionLocation(Integer attractionId);
-    List<Attraction> getAttractionList(List<String> titles,List<String> cities, List<String> districts, List<String> types);
+
+    List<Attraction> getAttractionList(List<String> titles, List<String> cities, List<String> districts, List<String> types);
 
     double getDistanceToAttraction(Integer attractionId, Float xCoordinate, Float yCoordinate);
 
-    List<Attraction> getAttractionList(List<String> cities, List<String> districts, List<String> types);
 }
