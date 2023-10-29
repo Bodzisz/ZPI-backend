@@ -1,15 +1,17 @@
 package zpi.controller.attraction;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zpi.dto.AttractionDto;
+import zpi.dto.AttractionLocationDto;
 import zpi.entity.Attraction;
 import zpi.service.AttractionService;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,11 +28,8 @@ public class AttractionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AttractionDto>> getAllAttractions() {
-        List<AttractionDto> attractions = new ArrayList<>();
-        attractionService.getAllAttractions().forEach(attraction -> {
-            attractions.add(new AttractionDto(attraction));
-        });
+    public ResponseEntity<Page<AttractionDto>> getAllAttractions(Pageable pageable) {
+        Page<AttractionDto> attractions = attractionService.getAllAttractions(pageable);
         return new ResponseEntity<>(attractions, HttpStatus.OK);
     }
 
@@ -49,24 +48,29 @@ public class AttractionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<AttractionDto> getAttractionById(@PathVariable("id") Integer attractionId) {
-        Attraction attraction = attractionService.getAttractionById(attractionId);
-        return new ResponseEntity<>(new AttractionDto(attraction), HttpStatus.OK);
+        AttractionDto attraction = attractionService.getAttractionById(attractionId);
+        return new ResponseEntity<>(attraction, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/location")
+    public ResponseEntity<AttractionLocationDto> getAttractionLocationById(@PathVariable("id") Integer attractionId) {
+        AttractionLocationDto attraction = attractionService.getAttractionLocation(attractionId);
+        return new ResponseEntity<>(attraction, HttpStatus.OK);
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<AttractionDto>> listAttractions(
+    public ResponseEntity<Page<AttractionDto>> listAttractions(
             @RequestParam(required = false) List<String> titles,
             @RequestParam(required = false) List<String> cities,
             @RequestParam(required = false) List<String> districts,
-            @RequestParam(required = false) List<String> types) {
+            @RequestParam(required = false) List<String> types,
+            Pageable pageable) {
 
-        List<AttractionDto> attractionResponse = new ArrayList<>();
+        Page<AttractionDto> attractions = attractionService
+                .getAttractionsWithFilter(titles, cities, districts, types, pageable);
 
-        attractionService.getAttractionList(titles, cities, districts, types)
-                .forEach(attraction -> attractionResponse.add(new AttractionDto(attraction)));
-
-        return attractionResponse.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
-                : new ResponseEntity<>(attractionResponse, HttpStatus.OK);
+        return attractions.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                : new ResponseEntity<>(attractions, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/distance")

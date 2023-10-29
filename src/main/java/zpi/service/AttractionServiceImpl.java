@@ -3,8 +3,11 @@ package zpi.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import zpi.dto.AttractionDto;
+import zpi.dto.AttractionLocationDto;
 import zpi.entity.Attraction;
 import zpi.repository.AttractionRepository;
 
@@ -12,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static zpi.Utils.PaginationUtils.convertToPage;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +30,8 @@ public class AttractionServiceImpl implements AttractionService {
     }
 
     @Override
-    public List<Attraction> getAllAttractions() {
-        return attractionRepository.findAll();
+    public Page<AttractionDto> getAllAttractions(Pageable pageable) {
+        return attractionRepository.findAll(pageable).map(AttractionDto::new);
     }
 
     @Override
@@ -47,23 +52,32 @@ public class AttractionServiceImpl implements AttractionService {
     }
 
     @Override
-    public Attraction getAttractionById(Integer attractionId) {
+    public AttractionDto getAttractionById(Integer attractionId) {
         Optional<Attraction> attraction = attractionRepository.findById(attractionId);
         if (attraction.isPresent()) {
-            return attraction.get();
+            return new AttractionDto(attraction.get());
         } else {
             throw new EntityNotFoundException("Attraction not found for ID: " + attractionId);
         }
     }
 
     @Override
-    public AttractionDto getAttractionLocation(Integer attractionId) {
-        return null;
+    public AttractionLocationDto getAttractionLocation(Integer attractionId) {
+        Optional<Attraction> attraction = attractionRepository.findById(attractionId);
+        if (attraction.isPresent()) {
+            return new AttractionLocationDto(attraction.get());
+        } else {
+            throw new EntityNotFoundException("Attraction not found for ID: " + attractionId);
+        }
     }
 
 
     @Override
-    public List<Attraction> getAttractionList(List<String> titles, List<String> cities, List<String> districts, List<String> types) {
+    public Page<AttractionDto> getAttractionsWithFilter(List<String> titles,
+                                                        List<String> cities,
+                                                        List<String> districts,
+                                                        List<String> types,
+                                                        Pageable pageable) {
 
         Predicate<Attraction> titlePredicate = attraction ->
                 (titles == null || titles.isEmpty()) || titles.contains(attraction.getTitle());
@@ -79,24 +93,28 @@ public class AttractionServiceImpl implements AttractionService {
 
         Predicate<Attraction> combinedPredicate = titlePredicate.and(cityPredicate).and(districtPredicate).and(typePredicate);
 
-        return attractionRepository.findAll()
+        return convertToPage(attractionRepository.findAll()
                 .stream()
                 .filter(combinedPredicate)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()), pageable)
+                .map(AttractionDto::new);
     }
 
     @Override
     public double getDistanceToAttraction(Integer attractionId, Float xCoordinate, Float yCoordinate) {
-        Attraction attraction = getAttractionById(attractionId);
-        Vector2D attractionLocalisation = new Vector2D(attraction.getXCoordinate(), attraction.getYCoordinate());
-        Vector2D userLocalisation = new Vector2D(xCoordinate, yCoordinate);
+        Optional<Attraction> attraction = attractionRepository.findById(attractionId);
+        if (attraction.isPresent()) {
+            Vector2D attractionLocalisation = new Vector2D(attraction.get().getXCoordinate(),
+                    attraction.get().getYCoordinate());
+            Vector2D userLocalisation = new Vector2D(xCoordinate, yCoordinate);
 
-        return convertToKilometers(attractionLocalisation.distance(userLocalisation));
+            return convertToKilometers(attractionLocalisation.distance(userLocalisation));
+        } else {
+            throw new EntityNotFoundException("Attraction not found for ID: " + attractionId);
+        }
     }
 
     public double convertToKilometers(double distance) {
         return Math.round(distance * 10000.0) / 100.0;
     }
-
-
 }

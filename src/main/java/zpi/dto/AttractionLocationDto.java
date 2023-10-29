@@ -1,6 +1,7 @@
 package zpi.dto;
 
 import lombok.Data;
+import zpi.entity.Attraction;
 
 @Data
 public class AttractionLocationDto {
@@ -8,4 +9,11 @@ public class AttractionLocationDto {
     private String title;
     private Float xCoordinate;
     private Float yCoordinate;
+
+    public AttractionLocationDto(Attraction attraction) {
+        this.id = attraction.getId();
+        this.title = attraction.getTitle();
+        this.xCoordinate = attraction.getXCoordinate();
+        this.yCoordinate = attraction.getYCoordinate();
+    }
 }
