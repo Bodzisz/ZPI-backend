@@ -11,8 +11,7 @@ import zpi.dto.AttractionLocationDto;
 import zpi.entity.Attraction;
 import zpi.repository.AttractionRepository;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -23,6 +22,8 @@ import static zpi.Utils.PaginationUtils.convertToPage;
 public class AttractionServiceImpl implements AttractionService {
 
     private final AttractionRepository attractionRepository;
+
+    private static final int DEFAULT_RANDOM_ATTRACTIONS_SIZE = 10;
 
     @Override
     public Attraction createAttraction(Attraction attraction) {
@@ -59,6 +60,38 @@ public class AttractionServiceImpl implements AttractionService {
         } else {
             throw new EntityNotFoundException("Attraction not found for ID: " + attractionId);
         }
+    }
+
+    @Override
+    public List<AttractionDto> getRandomAttractions(Optional<Integer> size) {
+        final int randomAttractionsSize = size.orElse(DEFAULT_RANDOM_ATTRACTIONS_SIZE);
+
+        if(randomAttractionsSize <= 0) {
+            throw new IllegalArgumentException("Random attractions size must be greater than 0");
+        }
+
+        List<Integer> allIds = attractionRepository.getAllIds();
+        int allIdsSize = allIds.size();
+
+        if(allIdsSize <= randomAttractionsSize) {
+            return attractionRepository.findAll().stream()
+                    .map(AttractionDto::new)
+                    .collect(Collectors.toList());
+        }
+
+        Random random = new Random();
+        Set<Integer> selectedIds = new HashSet<>();
+        while((selectedIds.size() != randomAttractionsSize) && (allIdsSize != 0)) {
+            System.out.println(allIdsSize);
+            int indexToAdd = random.nextInt(allIdsSize);
+            selectedIds.add(indexToAdd);
+            allIds.remove(indexToAdd);
+            allIdsSize--;
+        }
+
+        return attractionRepository.findAllById(selectedIds).stream()
+                .map(AttractionDto::new)
+                .collect(Collectors.toList());
     }
 
     @Override
