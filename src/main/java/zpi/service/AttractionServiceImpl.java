@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
+import zpi.dto.AttractionPictureDto;
 import zpi.entity.Attraction;
 import zpi.repository.AttractionRepository;
 
@@ -69,6 +70,21 @@ public class AttractionServiceImpl implements AttractionService {
         } else {
             throw new EntityNotFoundException("Attraction not found for ID: " + attractionId);
         }
+    }
+
+    @Override
+    public AttractionPictureDto getAttractionPicture(Integer attractionId) {
+        Attraction attraction = attractionRepository.findById(attractionId)
+                .orElseThrow(() -> new EntityNotFoundException("Attraction not found for ID: " + attractionId));
+        return new AttractionPictureDto(attraction.getPicture());
+    }
+
+    @Override
+    public List<AttractionLocationDto> getAllAttractionsLocations() {
+        final List<Attraction> allAttractions = attractionRepository.findAll();
+        return allAttractions.stream()
+                .map(AttractionLocationDto::new)
+                .collect(Collectors.toList());
     }
 
 
