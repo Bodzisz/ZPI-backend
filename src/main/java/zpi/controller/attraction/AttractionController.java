@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
+import zpi.dto.AttractionPictureDto;
 import zpi.entity.Attraction;
 import zpi.service.AttractionService;
 
@@ -56,6 +57,16 @@ public class AttractionController {
     public ResponseEntity<AttractionLocationDto> getAttractionLocationById(@PathVariable("id") Integer attractionId) {
         AttractionLocationDto attraction = attractionService.getAttractionLocation(attractionId);
         return new ResponseEntity<>(attraction, HttpStatus.OK);
+    }
+
+    @GetMapping("/locations")
+    public ResponseEntity<List<AttractionLocationDto>> getAllAttractionsLocations() {
+        return ResponseEntity.ok(attractionService.getAllAttractionsLocations());
+    }
+
+    @GetMapping("/{id}/picture")
+    public ResponseEntity<AttractionPictureDto> getAttractionPicture(@PathVariable("id") Integer attractionId) {
+        return ResponseEntity.ok(attractionService.getAttractionPicture(attractionId));
     }
 
     @GetMapping("/list")

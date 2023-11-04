@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
+import zpi.dto.AttractionPictureDto;
 import zpi.entity.Attraction;
 
 import java.util.List;
@@ -22,6 +23,10 @@ public interface AttractionService {
     AttractionDto getAttractionById(Integer attractionId);
 
     AttractionLocationDto getAttractionLocation(Integer attractionId);
+
+    List<AttractionLocationDto> getAllAttractionsLocations();
+
+    AttractionPictureDto getAttractionPicture(Integer attractionId);
 
     Page<AttractionDto> getAttractionsWithFilter(List<String> titles, List<String> cities, List<String> districts,
                                                  List<String> types, Pageable pageable);
