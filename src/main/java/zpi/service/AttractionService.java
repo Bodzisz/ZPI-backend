@@ -6,6 +6,7 @@ import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
 import zpi.dto.AttractionPictureDto;
 import zpi.entity.Attraction;
+import zpi.entity.City;
 
 import java.util.List;
 
@@ -33,4 +34,5 @@ public interface AttractionService {
 
     double getDistanceToAttraction(Integer attractionId, Float xCoordinate, Float yCoordinate);
 
+    City addCityIfNotExists(String cityName, String postalCode);
 }

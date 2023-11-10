@@ -15,12 +15,16 @@ public class AttractionDto {
     private String title;
     private String description;
     private byte[] picture;
+    private Float xCoordinate;
+    private Float yCoordinate;
 
     public AttractionDto(Attraction attraction) {
         this.id = attraction.getId();
         this.title = attraction.getTitle();
         this.description = attraction.getDescription();
         this.picture = attraction.getPicture();
+        this.xCoordinate=attraction.getXCoordinate();
+        this.yCoordinate=attraction.getYCoordinate();
 
         City city = attraction.getCity();
         if (city != null) {
