@@ -10,7 +10,9 @@ import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
 import zpi.dto.AttractionPictureDto;
 import zpi.entity.Attraction;
+import zpi.entity.City;
 import zpi.repository.AttractionRepository;
+import zpi.repository.CityRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +26,7 @@ import static zpi.Utils.PaginationUtils.convertToPage;
 public class AttractionServiceImpl implements AttractionService {
 
     private final AttractionRepository attractionRepository;
-
+    private final CityRepository cityRepository;
     @Override
     public Attraction createAttraction(Attraction attraction) {
         return attractionRepository.save(attraction);
@@ -132,5 +134,10 @@ public class AttractionServiceImpl implements AttractionService {
 
     public double convertToKilometers(double distance) {
         return Math.round(distance * 10000.0) / 100.0;
+    }
+
+    public City addCityIfNotExists(String cityName, String postalCode) {
+        return cityRepository.findByCityNameAndPostalCode(cityName, postalCode)
+                .orElseGet(() -> cityRepository.save(new City(cityName, postalCode)));
     }
 }

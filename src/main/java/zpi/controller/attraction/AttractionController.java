@@ -10,6 +10,7 @@ import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
 import zpi.dto.AttractionPictureDto;
 import zpi.entity.Attraction;
+import zpi.entity.City;
 import zpi.service.AttractionService;
 
 import javax.validation.Valid;
@@ -94,6 +95,13 @@ public class AttractionController {
                 .getDistanceToAttraction(attractionId, xCoordinate, yCoordinate);
 
         return new ResponseEntity<>(distance, HttpStatus.OK);
+    }
+
+    @PostMapping("/addCity")
+    public ResponseEntity<City> addCity(@RequestParam String cityName,
+                                        @RequestParam String postalCode) {
+        City city = attractionService.addCityIfNotExists(cityName, postalCode);
+        return new ResponseEntity<>(city, HttpStatus.CREATED);
     }
 
 }
