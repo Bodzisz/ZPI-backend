@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
@@ -20,7 +21,7 @@ import java.util.List;
 public class AttractionController {
 
     private final AttractionService attractionService;
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<Attraction> createAttraction(@Valid @RequestBody Attraction attraction) {
         Attraction savedAttraction = attractionService.createAttraction(attraction);
@@ -33,12 +34,14 @@ public class AttractionController {
         return new ResponseEntity<>(attractions, HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/{id}")
     public ResponseEntity<Attraction> updateAttraction(@Valid @RequestBody Attraction attraction, @PathVariable("id") Integer attractionId) {
         Attraction updatedAttraction = attractionService.updateAttraction(attraction, attractionId);
         return new ResponseEntity<>(updatedAttraction, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAttractionById(@PathVariable("id") Integer attractionId) {
         attractionService.deleteAttractionById(attractionId);
