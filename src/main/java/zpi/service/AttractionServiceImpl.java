@@ -10,9 +10,13 @@ import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
 import zpi.dto.AttractionPictureDto;
 import zpi.entity.Attraction;
+import zpi.entity.AttractionType;
 import zpi.entity.City;
+import zpi.entity.District;
 import zpi.repository.AttractionRepository;
+import zpi.repository.AttractionTypeRepository;
 import zpi.repository.CityRepository;
+import zpi.repository.DistrictRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +31,8 @@ public class AttractionServiceImpl implements AttractionService {
 
     private final AttractionRepository attractionRepository;
     private final CityRepository cityRepository;
+    private final AttractionTypeRepository attractionTypeRepository;
+    private final DistrictRepository districtRepository;
     @Override
     public Attraction createAttraction(Attraction attraction) {
         return attractionRepository.save(attraction);
@@ -139,5 +145,15 @@ public class AttractionServiceImpl implements AttractionService {
     public City addCityIfNotExists(String cityName, String postalCode) {
         return cityRepository.findByCityNameAndPostalCode(cityName, postalCode)
                 .orElseGet(() -> cityRepository.save(new City(cityName, postalCode)));
+    }
+
+    public AttractionType addAttractionTypeIfNotExists(String typeName) {
+        return attractionTypeRepository.findByAttractionType(typeName)
+                .orElseGet(() -> attractionTypeRepository.save(new AttractionType(typeName)));
+    }
+
+    public District addDistrictIfNotExists(String districtName) {
+        return districtRepository.findByDistrictName(districtName)
+                .orElseGet(() -> districtRepository.save(new District(districtName)));
     }
 }
