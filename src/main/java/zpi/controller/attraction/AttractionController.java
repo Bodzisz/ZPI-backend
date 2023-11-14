@@ -21,7 +21,8 @@ import java.util.List;
 public class AttractionController {
 
     private final AttractionService attractionService;
-    @PreAuthorize("isAuthenticated()")
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @PostMapping
     public ResponseEntity<Attraction> createAttraction(@Valid @RequestBody Attraction attraction) {
         Attraction savedAttraction = attractionService.createAttraction(attraction);
@@ -34,7 +35,7 @@ public class AttractionController {
         return new ResponseEntity<>(attractions, HttpStatus.OK);
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Attraction> updateAttraction(@Valid @RequestBody Attraction attraction, @PathVariable("id") Integer attractionId) {
         Attraction updatedAttraction = attractionService.updateAttraction(attraction, attractionId);

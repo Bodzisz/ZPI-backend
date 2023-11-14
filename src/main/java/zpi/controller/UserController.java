@@ -1,10 +1,9 @@
 package zpi.controller;
 
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import zpi.dto.NewUserDto;
 import zpi.entity.User;
 import zpi.service.UserService;
@@ -12,14 +11,11 @@ import zpi.service.UserService;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping
     public ResponseEntity<List<User>> getUsers() {
@@ -33,7 +29,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> postUser(@RequestBody final NewUserDto user) {
-        userCheck(user);
+        userService.userCheck(user);
         return ResponseEntity.ok(userService.addUser(user));
     }
 
@@ -48,14 +44,5 @@ public class UserController {
     public ResponseEntity<Void> updateUser(@PathVariable int id, @RequestBody User updatedUser) {
         userService.updateUser(id, updatedUser);
         return ResponseEntity.status(204).build();
-    }
-
-    private void userCheck(NewUserDto user){
-        if (user.lastName() == null || user.lastName().length() < 3)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid last name");
-        if (user.firstName() == null || user.firstName().length() < 3)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid first name");
-        if (user.login() == null || user.login().length() < 5 || userService.userExists(user.login()))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid login");
     }
 }

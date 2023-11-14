@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import zpi.dto.NewUserDto;
+import zpi.entity.Role;
 import zpi.entity.User;
 import zpi.repository.UserRepository;
 
@@ -19,6 +20,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final static int MIN_LOGIN_LENGTH = 5;
+    private final static int MIN_CREDENTIAL_LENGTH = 3;
 
     @Override
     public List<User> getUsers() {
@@ -35,7 +38,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User addUser(NewUserDto user) {
-        User userToAdd = new User(user.firstName(), user.lastName(), user.login(), user.password(), user.role());
+        User userToAdd = new User(user.firstName(), user.lastName(), user.login(), user.password(),
+                Role.USER.getRoleName());
         userToAdd.setId(0);
         if (userToAdd.getPassword().length() < 3 || Objects.equals(userToAdd.getFirstName(), "")
                 || Objects.equals(userToAdd.getLastName(), "") || userToAdd.getLogin().length() < 3)
@@ -63,15 +67,35 @@ public class UserServiceImpl implements UserService {
             existingUser.setPassword(user.getPassword());
             existingUser.setLogin(user.getLogin());
             userRepository.save(existingUser);
-        }
-        else{
+        } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     String.format("User of id=%d was not found", id));
         }
     }
 
     @Override
-    public boolean userExists(final String login){
+    public void userCheck(NewUserDto user) {
+        validateField(user.lastName(), "Invalid last name");
+        validateField(user.firstName(), "Invalid first name");
+        validateLogin(user.login(), "Invalid login");
+    }
+
+    private void validateField(String field, String errorMessage) {
+        if (Optional.ofNullable(field).map(String::length).orElse(0) < MIN_CREDENTIAL_LENGTH) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage);
+        }
+    }
+
+    private void validateLogin(String login, String errorMessage) {
+        if (Optional.ofNullable(login).map(String::length).orElse(0) < MIN_CREDENTIAL_LENGTH
+                || userExists(login)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid login");
+
+        }
+    }
+
+    @Override
+    public boolean userExists(final String login) {
         return userRepository.existsByLogin(login);
     }
 
