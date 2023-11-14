@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateLogin(String login, String errorMessage) {
-        if (Optional.ofNullable(login).map(String::length).orElse(0) < MIN_CREDENTIAL_LENGTH
+        if (Optional.ofNullable(login).map(String::length).orElse(0) < MIN_LOGIN_LENGTH
                 || userExists(login)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid login");
 
