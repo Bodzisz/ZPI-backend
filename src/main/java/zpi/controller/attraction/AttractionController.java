@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
+import zpi.dto.AttractionPictureDto;
 import zpi.entity.Attraction;
+import zpi.entity.City;
 import zpi.service.AttractionService;
 
 import javax.validation.Valid;
@@ -62,6 +64,15 @@ public class AttractionController {
     @GetMapping("/random")
     public ResponseEntity<List<AttractionDto>> getRandomAttractions(Optional<Integer> size) {
         return ResponseEntity.ok(attractionService.getRandomAttractions(size));
+
+    @GetMapping("/locations")
+    public ResponseEntity<List<AttractionLocationDto>> getAllAttractionsLocations() {
+        return ResponseEntity.ok(attractionService.getAllAttractionsLocations());
+    }
+
+    @GetMapping("/{id}/picture")
+    public ResponseEntity<AttractionPictureDto> getAttractionPicture(@PathVariable("id") Integer attractionId) {
+        return ResponseEntity.ok(attractionService.getAttractionPicture(attractionId));
     }
 
     @GetMapping("/list")
@@ -89,6 +100,13 @@ public class AttractionController {
                 .getDistanceToAttraction(attractionId, xCoordinate, yCoordinate);
 
         return new ResponseEntity<>(distance, HttpStatus.OK);
+    }
+
+    @PostMapping("/addCity")
+    public ResponseEntity<City> addCity(@RequestParam String cityName,
+                                        @RequestParam String postalCode) {
+        City city = attractionService.addCityIfNotExists(cityName, postalCode);
+        return new ResponseEntity<>(city, HttpStatus.CREATED);
     }
 
 }

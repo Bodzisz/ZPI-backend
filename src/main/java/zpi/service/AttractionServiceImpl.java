@@ -8,8 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
+import zpi.dto.AttractionPictureDto;
 import zpi.entity.Attraction;
+import zpi.entity.City;
 import zpi.repository.AttractionRepository;
+import zpi.repository.CityRepository;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -20,10 +23,12 @@ import static zpi.Utils.PaginationUtils.convertToPage;
 @Service
 @RequiredArgsConstructor
 public class AttractionServiceImpl implements AttractionService {
+  
+    private static final int DEFAULT_RANDOM_ATTRACTIONS_SIZE = 10;
 
     private final AttractionRepository attractionRepository;
 
-    private static final int DEFAULT_RANDOM_ATTRACTIONS_SIZE = 10;
+    private final CityRepository cityRepository;
 
     @Override
     public Attraction createAttraction(Attraction attraction) {
@@ -104,6 +109,21 @@ public class AttractionServiceImpl implements AttractionService {
         }
     }
 
+    @Override
+    public AttractionPictureDto getAttractionPicture(Integer attractionId) {
+        Attraction attraction = attractionRepository.findById(attractionId)
+                .orElseThrow(() -> new EntityNotFoundException("Attraction not found for ID: " + attractionId));
+        return new AttractionPictureDto(attraction.getPicture());
+    }
+
+    @Override
+    public List<AttractionLocationDto> getAllAttractionsLocations() {
+        final List<Attraction> allAttractions = attractionRepository.findAll();
+        return allAttractions.stream()
+                .map(AttractionLocationDto::new)
+                .collect(Collectors.toList());
+    }
+
 
     @Override
     public Page<AttractionDto> getAttractionsWithFilter(List<String> titles,
@@ -149,5 +169,10 @@ public class AttractionServiceImpl implements AttractionService {
 
     public double convertToKilometers(double distance) {
         return Math.round(distance * 10000.0) / 100.0;
+    }
+
+    public City addCityIfNotExists(String cityName, String postalCode) {
+        return cityRepository.findByCityNameAndPostalCode(cityName, postalCode)
+                .orElseGet(() -> cityRepository.save(new City(cityName, postalCode)));
     }
 }
