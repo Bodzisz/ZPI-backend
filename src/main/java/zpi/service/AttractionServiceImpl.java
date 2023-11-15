@@ -9,14 +9,9 @@ import org.springframework.stereotype.Service;
 import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
 import zpi.dto.AttractionPictureDto;
-import zpi.entity.Attraction;
-import zpi.entity.AttractionType;
-import zpi.entity.City;
-import zpi.entity.District;
-import zpi.repository.AttractionRepository;
-import zpi.repository.AttractionTypeRepository;
-import zpi.repository.CityRepository;
-import zpi.repository.DistrictRepository;
+import zpi.dto.NewAttractionDto;
+import zpi.entity.*;
+import zpi.repository.*;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -35,8 +30,14 @@ public class AttractionServiceImpl implements AttractionService {
     private final DistrictRepository districtRepository;
 
     @Override
-    public Attraction createAttraction(Attraction attraction) {
-        return attractionRepository.save(attraction);
+    public AttractionDto createAttraction(NewAttractionDto newAttractionDto) {
+        City city = addCityIfNotExists(newAttractionDto.cityName(), newAttractionDto.postalCode());
+        AttractionType attractionType = addAttractionTypeIfNotExists(newAttractionDto.attractionType());
+        District district = addDistrictIfNotExists(newAttractionDto.district());
+
+        return new AttractionDto(attractionRepository.save(new Attraction(district, city, newAttractionDto.title(),
+                attractionType, newAttractionDto.description(), newAttractionDto.picture(),
+                newAttractionDto.xCoordinate(), newAttractionDto.xCoordinate())));
     }
 
     @Override
@@ -45,12 +46,18 @@ public class AttractionServiceImpl implements AttractionService {
     }
 
     @Override
-    public Attraction updateAttraction(Attraction attraction, Integer attractionId) {
+    public AttractionDto updateAttraction(NewAttractionDto newAttractionDto, Integer attractionId) {
         if (!attractionRepository.existsById(attractionId)) {
             throw new EntityNotFoundException("Attraction not found for ID: " + attractionId);
         }
-        attraction.setId(attractionId);
-        return attractionRepository.save(attraction);
+
+        City city = addCityIfNotExists(newAttractionDto.cityName(), newAttractionDto.postalCode());
+        AttractionType attractionType = addAttractionTypeIfNotExists(newAttractionDto.attractionType());
+        District district = addDistrictIfNotExists(newAttractionDto.district());
+
+        return new AttractionDto(attractionRepository.save(new Attraction(attractionId, district, city, newAttractionDto.title(),
+                attractionType, newAttractionDto.description(), newAttractionDto.picture(),
+                newAttractionDto.xCoordinate(), newAttractionDto.xCoordinate())));
     }
 
     @Override
@@ -73,32 +80,44 @@ public class AttractionServiceImpl implements AttractionService {
 
     @Override
     public List<AttractionDto> getRandomAttractions(Optional<Integer> size) {
-        final int randomAttractionsSize = size.orElse(DEFAULT_RANDOM_ATTRACTIONS_SIZE);
+        final int randomAttractionsSize = validateSize(size);
 
+        List<Integer> allIds = attractionRepository.getAllIds();
+        if (allIds.size() <= randomAttractionsSize) {
+            return getAllAttractions();
+        }
+
+        Set<Integer> selectedIds = selectRandomIds(randomAttractionsSize, allIds);
+        return getAttractionsByIds(selectedIds);
+    }
+
+    private int validateSize(Optional<Integer> size) {
+        final int randomAttractionsSize = size.orElse(DEFAULT_RANDOM_ATTRACTIONS_SIZE);
         if (randomAttractionsSize <= 0) {
             throw new IllegalArgumentException("Random attractions size must be greater than 0");
         }
+        return randomAttractionsSize;
+    }
 
-        List<Integer> allIds = attractionRepository.getAllIds();
-        int allIdsSize = allIds.size();
+    private List<AttractionDto> getAllAttractions() {
+        return attractionRepository.findAll().stream()
+                .map(AttractionDto::new)
+                .collect(Collectors.toList());
+    }
 
-        if (allIdsSize <= randomAttractionsSize) {
-            return attractionRepository.findAll().stream()
-                    .map(AttractionDto::new)
-                    .collect(Collectors.toList());
-        }
-
+    private Set<Integer> selectRandomIds(int randomAttractionsSize, List<Integer> allIds) {
         Random random = new Random();
         Set<Integer> selectedIds = new HashSet<>();
-        while ((selectedIds.size() != randomAttractionsSize) && (allIdsSize != 0)) {
-            System.out.println(allIdsSize);
-            int indexToAdd = random.nextInt(allIdsSize);
-            selectedIds.add(indexToAdd);
+        while (selectedIds.size() != randomAttractionsSize) {
+            int indexToAdd = random.nextInt(allIds.size());
+            selectedIds.add(allIds.get(indexToAdd));
             allIds.remove(indexToAdd);
-            allIdsSize--;
         }
+        return selectedIds;
+    }
 
-        return attractionRepository.findAllById(selectedIds).stream()
+    private List<AttractionDto> getAttractionsByIds(Set<Integer> ids) {
+        return attractionRepository.findAllById(ids).stream()
                 .map(AttractionDto::new)
                 .collect(Collectors.toList());
     }
