@@ -10,9 +10,13 @@ import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
 import zpi.dto.AttractionPictureDto;
 import zpi.entity.Attraction;
+import zpi.entity.AttractionType;
 import zpi.entity.City;
+import zpi.entity.District;
 import zpi.repository.AttractionRepository;
+import zpi.repository.AttractionTypeRepository;
 import zpi.repository.CityRepository;
+import zpi.repository.DistrictRepository;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -23,12 +27,12 @@ import static zpi.Utils.PaginationUtils.convertToPage;
 @Service
 @RequiredArgsConstructor
 public class AttractionServiceImpl implements AttractionService {
-  
+
     private static final int DEFAULT_RANDOM_ATTRACTIONS_SIZE = 10;
-
     private final AttractionRepository attractionRepository;
-
     private final CityRepository cityRepository;
+    private final AttractionTypeRepository attractionTypeRepository;
+    private final DistrictRepository districtRepository;
 
     @Override
     public Attraction createAttraction(Attraction attraction) {
@@ -71,14 +75,14 @@ public class AttractionServiceImpl implements AttractionService {
     public List<AttractionDto> getRandomAttractions(Optional<Integer> size) {
         final int randomAttractionsSize = size.orElse(DEFAULT_RANDOM_ATTRACTIONS_SIZE);
 
-        if(randomAttractionsSize <= 0) {
+        if (randomAttractionsSize <= 0) {
             throw new IllegalArgumentException("Random attractions size must be greater than 0");
         }
 
         List<Integer> allIds = attractionRepository.getAllIds();
         int allIdsSize = allIds.size();
 
-        if(allIdsSize <= randomAttractionsSize) {
+        if (allIdsSize <= randomAttractionsSize) {
             return attractionRepository.findAll().stream()
                     .map(AttractionDto::new)
                     .collect(Collectors.toList());
@@ -86,7 +90,7 @@ public class AttractionServiceImpl implements AttractionService {
 
         Random random = new Random();
         Set<Integer> selectedIds = new HashSet<>();
-        while((selectedIds.size() != randomAttractionsSize) && (allIdsSize != 0)) {
+        while ((selectedIds.size() != randomAttractionsSize) && (allIdsSize != 0)) {
             System.out.println(allIdsSize);
             int indexToAdd = random.nextInt(allIdsSize);
             selectedIds.add(indexToAdd);
@@ -174,5 +178,15 @@ public class AttractionServiceImpl implements AttractionService {
     public City addCityIfNotExists(String cityName, String postalCode) {
         return cityRepository.findByCityNameAndPostalCode(cityName, postalCode)
                 .orElseGet(() -> cityRepository.save(new City(cityName, postalCode)));
+    }
+
+    public AttractionType addAttractionTypeIfNotExists(String typeName) {
+        return attractionTypeRepository.findByAttractionType(typeName)
+                .orElseGet(() -> attractionTypeRepository.save(new AttractionType(typeName)));
+    }
+
+    public District addDistrictIfNotExists(String districtName) {
+        return districtRepository.findByDistrictName(districtName)
+                .orElseGet(() -> districtRepository.save(new District(districtName)));
     }
 }

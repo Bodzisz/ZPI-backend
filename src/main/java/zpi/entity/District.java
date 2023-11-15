@@ -19,7 +19,7 @@ public class District {
     public District() {
     }
 
-    public District(String districtName, City city) {
+    public District(String districtName) {
         this.districtName = districtName;
     }
 }
