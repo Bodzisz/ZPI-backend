@@ -12,6 +12,7 @@ import zpi.dto.AttractionPictureDto;
 import zpi.entity.Attraction;
 import zpi.entity.AttractionType;
 import zpi.entity.City;
+import zpi.entity.District;
 import zpi.repository.AttractionRepository;
 import zpi.repository.AttractionTypeRepository;
 import zpi.repository.CityRepository;
@@ -74,14 +75,14 @@ public class AttractionServiceImpl implements AttractionService {
     public List<AttractionDto> getRandomAttractions(Optional<Integer> size) {
         final int randomAttractionsSize = size.orElse(DEFAULT_RANDOM_ATTRACTIONS_SIZE);
 
-        if(randomAttractionsSize <= 0) {
+        if (randomAttractionsSize <= 0) {
             throw new IllegalArgumentException("Random attractions size must be greater than 0");
         }
 
         List<Integer> allIds = attractionRepository.getAllIds();
         int allIdsSize = allIds.size();
 
-        if(allIdsSize <= randomAttractionsSize) {
+        if (allIdsSize <= randomAttractionsSize) {
             return attractionRepository.findAll().stream()
                     .map(AttractionDto::new)
                     .collect(Collectors.toList());
@@ -89,7 +90,7 @@ public class AttractionServiceImpl implements AttractionService {
 
         Random random = new Random();
         Set<Integer> selectedIds = new HashSet<>();
-        while((selectedIds.size() != randomAttractionsSize) && (allIdsSize != 0)) {
+        while ((selectedIds.size() != randomAttractionsSize) && (allIdsSize != 0)) {
             System.out.println(allIdsSize);
             int indexToAdd = random.nextInt(allIdsSize);
             selectedIds.add(indexToAdd);
