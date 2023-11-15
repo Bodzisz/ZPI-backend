@@ -9,6 +9,7 @@ import zpi.entity.Attraction;
 import zpi.entity.City;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AttractionService {
 
@@ -22,6 +23,8 @@ public interface AttractionService {
     void deleteAttractionById(Integer attractionId);
 
     AttractionDto getAttractionById(Integer attractionId);
+
+    List<AttractionDto> getRandomAttractions(Optional<Integer> size);
 
     AttractionLocationDto getAttractionLocation(Integer attractionId);
 

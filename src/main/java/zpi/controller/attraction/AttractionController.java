@@ -15,6 +15,7 @@ import zpi.service.AttractionService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -58,6 +59,11 @@ public class AttractionController {
     public ResponseEntity<AttractionLocationDto> getAttractionLocationById(@PathVariable("id") Integer attractionId) {
         AttractionLocationDto attraction = attractionService.getAttractionLocation(attractionId);
         return new ResponseEntity<>(attraction, HttpStatus.OK);
+    }
+
+    @GetMapping("/random")
+    public ResponseEntity<List<AttractionDto>> getRandomAttractions(Optional<Integer> size) {
+        return ResponseEntity.ok(attractionService.getRandomAttractions(size));
     }
 
     @GetMapping("/locations")
