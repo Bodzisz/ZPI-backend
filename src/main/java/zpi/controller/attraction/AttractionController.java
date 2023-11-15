@@ -64,6 +64,7 @@ public class AttractionController {
     @GetMapping("/random")
     public ResponseEntity<List<AttractionDto>> getRandomAttractions(Optional<Integer> size) {
         return ResponseEntity.ok(attractionService.getRandomAttractions(size));
+    }
 
     @GetMapping("/locations")
     public ResponseEntity<List<AttractionLocationDto>> getAllAttractionsLocations() {
