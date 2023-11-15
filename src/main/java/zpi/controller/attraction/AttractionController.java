@@ -11,11 +11,14 @@ import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
 import zpi.dto.AttractionPictureDto;
 import zpi.entity.Attraction;
+import zpi.entity.AttractionType;
 import zpi.entity.City;
+import zpi.entity.District;
 import zpi.service.AttractionService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -64,6 +67,11 @@ public class AttractionController {
         return new ResponseEntity<>(attraction, HttpStatus.OK);
     }
 
+    @GetMapping("/random")
+    public ResponseEntity<List<AttractionDto>> getRandomAttractions(Optional<Integer> size) {
+        return ResponseEntity.ok(attractionService.getRandomAttractions(size));
+    }
+
     @GetMapping("/locations")
     public ResponseEntity<List<AttractionLocationDto>> getAllAttractionsLocations() {
         return ResponseEntity.ok(attractionService.getAllAttractionsLocations());
@@ -108,4 +116,15 @@ public class AttractionController {
         return new ResponseEntity<>(city, HttpStatus.CREATED);
     }
 
+    @PostMapping("/addAttractionType")
+    public ResponseEntity<AttractionType> addAttractionType(@RequestParam String typeName) {
+        AttractionType attractionType = attractionService.addAttractionTypeIfNotExists(typeName);
+        return new ResponseEntity<>(attractionType, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/addDistrict")
+    public ResponseEntity<District> addDistrict(@RequestParam String districtName) {
+        District district = attractionService.addDistrictIfNotExists(districtName);
+        return new ResponseEntity<>(district, HttpStatus.CREATED);
+    }
 }

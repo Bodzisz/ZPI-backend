@@ -6,9 +6,12 @@ import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
 import zpi.dto.AttractionPictureDto;
 import zpi.entity.Attraction;
+import zpi.entity.AttractionType;
 import zpi.entity.City;
+import zpi.entity.District;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AttractionService {
 
@@ -23,6 +26,8 @@ public interface AttractionService {
 
     AttractionDto getAttractionById(Integer attractionId);
 
+    List<AttractionDto> getRandomAttractions(Optional<Integer> size);
+
     AttractionLocationDto getAttractionLocation(Integer attractionId);
 
     List<AttractionLocationDto> getAllAttractionsLocations();
@@ -35,4 +40,8 @@ public interface AttractionService {
     double getDistanceToAttraction(Integer attractionId, Float xCoordinate, Float yCoordinate);
 
     City addCityIfNotExists(String cityName, String postalCode);
+    AttractionType addAttractionTypeIfNotExists(String typeName);
+
+    District addDistrictIfNotExists(String districtName);
+
 }
