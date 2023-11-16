@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
 import zpi.dto.AttractionPictureDto;
-import zpi.entity.Attraction;
+import zpi.dto.NewAttractionDto;
 import zpi.entity.AttractionType;
 import zpi.entity.City;
 import zpi.entity.District;
@@ -29,8 +29,8 @@ public class AttractionController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     @PostMapping
-    public ResponseEntity<Attraction> createAttraction(@Valid @RequestBody Attraction attraction) {
-        Attraction savedAttraction = attractionService.createAttraction(attraction);
+    public ResponseEntity<AttractionDto> createAttraction(@Valid @RequestBody NewAttractionDto newAttractionDto) {
+        AttractionDto savedAttraction = attractionService.createAttraction(newAttractionDto);
         return new ResponseEntity<>(savedAttraction, HttpStatus.CREATED);
     }
 
@@ -42,8 +42,8 @@ public class AttractionController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<Attraction> updateAttraction(@Valid @RequestBody Attraction attraction, @PathVariable("id") Integer attractionId) {
-        Attraction updatedAttraction = attractionService.updateAttraction(attraction, attractionId);
+    public ResponseEntity<AttractionDto> updateAttraction(@Valid @RequestBody NewAttractionDto newAttractionDto, @PathVariable("id") Integer attractionId) {
+        AttractionDto updatedAttraction = attractionService.updateAttraction(newAttractionDto, attractionId);
         return new ResponseEntity<>(updatedAttraction, HttpStatus.OK);
     }
 

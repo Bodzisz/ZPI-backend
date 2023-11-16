@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
 import zpi.dto.AttractionPictureDto;
-import zpi.entity.Attraction;
+import zpi.dto.NewAttractionDto;
 import zpi.entity.AttractionType;
 import zpi.entity.City;
 import zpi.entity.District;
@@ -15,12 +15,12 @@ import java.util.Optional;
 
 public interface AttractionService {
 
-    Attraction createAttraction(Attraction attraction);
+    AttractionDto createAttraction(NewAttractionDto newAttractionDto);
 
     Page<AttractionDto> getAllAttractions(Pageable pageable);
 
-    Attraction updateAttraction(Attraction attraction,
-                                Integer attractionId);
+    AttractionDto updateAttraction(NewAttractionDto newAttractionDto,
+                                   Integer attractionId);
 
     void deleteAttractionById(Integer attractionId);
 
@@ -40,8 +40,8 @@ public interface AttractionService {
     double getDistanceToAttraction(Integer attractionId, Float xCoordinate, Float yCoordinate);
 
     City addCityIfNotExists(String cityName, String postalCode);
+
     AttractionType addAttractionTypeIfNotExists(String typeName);
 
     District addDistrictIfNotExists(String districtName);
-
 }
