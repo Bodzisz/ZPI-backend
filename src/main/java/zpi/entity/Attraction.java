@@ -58,4 +58,16 @@ public class Attraction {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
     }
+
+    public Attraction(Integer id, District district, City city, String title, AttractionType attractionType, String description, byte[] picture, Float xCoordinate, Float yCoordinate) {
+        this.id = id;
+        this.district = district;
+        this.city = city;
+        this.title = title;
+        this.attractionType = attractionType;
+        this.description = description;
+        this.picture = picture;
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
+    }
 }
