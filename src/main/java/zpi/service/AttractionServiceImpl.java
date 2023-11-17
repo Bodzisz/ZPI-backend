@@ -156,10 +156,10 @@ public class AttractionServiceImpl implements AttractionService {
                                                         Pageable pageable) {
 
         Predicate<Attraction> titlePredicate = attraction ->
-                (titles == null || titles.isEmpty()) || titles.contains(attraction.getTitle());
+                (titles == null || titles.isEmpty()) || titles.stream().anyMatch((title) -> attraction.getTitle().toLowerCase().contains(title.toLowerCase()));
 
         Predicate<Attraction> cityPredicate = attraction ->
-                (cities == null || cities.isEmpty()) || cities.contains(attraction.getCity().getCityName());
+                (cities == null || cities.isEmpty()) || cities.stream().anyMatch((city) -> attraction.getCity().getCityName().toLowerCase().contains(city.toLowerCase()));
 
         Predicate<Attraction> districtPredicate = attraction ->
                 (districts == null || districts.isEmpty()) || districts.contains(attraction.getDistrict().getDistrictName());
