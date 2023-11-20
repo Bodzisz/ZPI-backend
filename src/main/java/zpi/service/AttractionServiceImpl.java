@@ -36,8 +36,8 @@ public class AttractionServiceImpl implements AttractionService {
         District district = addDistrictIfNotExists(newAttractionDto.district());
 
         return new AttractionDto(attractionRepository.save(new Attraction(district, city, newAttractionDto.title(),
-                attractionType, newAttractionDto.description(), newAttractionDto.picture(),
-                newAttractionDto.xCoordinate(), newAttractionDto.xCoordinate())));
+                attractionType, newAttractionDto.description(), Base64.getDecoder().decode(newAttractionDto.picture()),
+                newAttractionDto.xCoordinate(), newAttractionDto.yCoordinate())));
     }
 
     @Override
@@ -56,8 +56,8 @@ public class AttractionServiceImpl implements AttractionService {
         District district = addDistrictIfNotExists(newAttractionDto.district());
 
         return new AttractionDto(attractionRepository.save(new Attraction(attractionId, district, city, newAttractionDto.title(),
-                attractionType, newAttractionDto.description(), newAttractionDto.picture(),
-                newAttractionDto.xCoordinate(), newAttractionDto.xCoordinate())));
+                attractionType, newAttractionDto.description(), Base64.getDecoder().decode(newAttractionDto.picture()),
+                newAttractionDto.xCoordinate(), newAttractionDto.yCoordinate())));
     }
 
     @Override
