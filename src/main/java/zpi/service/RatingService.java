@@ -84,6 +84,6 @@ public class RatingService {
     }
 
     public boolean isRatingValid(Integer rating) {
-        return rating <= 1 || rating >= 5;
+        return rating < 1 || rating > 5;
     }
 }
