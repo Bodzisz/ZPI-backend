@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://miejscownik-do-user-13428586-0.c.db.ondigitalocean.com:25060/zpi
+    username: ${ZPI_DB_USER}
+    password: ${ZPI_DB_PASSWORD}
+
+
+  jpa:
+    show-sql: false
