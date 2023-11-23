@@ -19,6 +19,7 @@ import zpi.service.AttractionService;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -126,5 +127,10 @@ public class AttractionController {
     public ResponseEntity<District> addDistrict(@RequestParam String districtName) {
         District district = attractionService.addDistrictIfNotExists(districtName);
         return new ResponseEntity<>(district, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/types")
+    public ResponseEntity<List<AttractionType>> getAttractionTypes() {
+        return ResponseEntity.ok(attractionService.getAllAttractionTypes());
     }
 }

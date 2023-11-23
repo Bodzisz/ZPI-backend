@@ -208,4 +208,9 @@ public class AttractionServiceImpl implements AttractionService {
         return districtRepository.findByDistrictName(districtName)
                 .orElseGet(() -> districtRepository.save(new District(districtName)));
     }
+
+    @Override
+    public List<AttractionType> getAllAttractionTypes() {
+        return attractionTypeRepository.findAll();
+    }
 }
