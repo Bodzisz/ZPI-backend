@@ -23,22 +23,23 @@ public class AttractionDto {
         this.title = attraction.getTitle();
         this.description = attraction.getDescription();
         this.picture = attraction.getPicture();
-        this.xCoordinate=attraction.getXCoordinate();
-        this.yCoordinate=attraction.getYCoordinate();
-
+        this.xCoordinate = attraction.getXCoordinate();
+        this.yCoordinate = attraction.getYCoordinate();
         City city = attraction.getCity();
         if (city != null) {
             this.city = city.getCityName();
         }
-
-        District district = attraction.getDistrict();
+        District district = attraction
+                .getDistrict();
         if (district != null) {
-            this.district = district.getDistrictName();
+            this.district = district
+                    .getDistrictName();
         }
-
-        AttractionType attractionType = attraction.getAttractionType();
+        AttractionType attractionType = attraction
+                .getAttractionType();
         if (attractionType != null) {
-            this.attractionType = attractionType.getAttractionType();
+            this.attractionType = attractionType
+                    .getAttractionType();
         }
     }
 

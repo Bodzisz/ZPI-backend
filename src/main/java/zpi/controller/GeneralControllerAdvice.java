@@ -1,4 +1,4 @@
-package zpi.controller.attraction;
+package zpi.controller;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice(assignableTypes = AttractionController.class)
 @Slf4j
-public class AttractionControllerAdvice {
+public class GeneralControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneralException(Exception ex) {

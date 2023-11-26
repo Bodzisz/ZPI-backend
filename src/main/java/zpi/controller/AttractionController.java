@@ -1,4 +1,4 @@
-package zpi.controller.attraction;
+package zpi.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

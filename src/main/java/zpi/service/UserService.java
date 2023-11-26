@@ -4,6 +4,7 @@ import zpi.dto.NewUserDto;
 import zpi.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
     List<User> getUsers();
@@ -12,7 +13,7 @@ public interface UserService {
 
     User addUser(final NewUserDto user);
 
-    User getByLogin(final String login);
+    Optional<User> getByLogin(final String login);
 
     User deleteUser(final int id);
 
