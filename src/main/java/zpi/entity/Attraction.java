@@ -1,10 +1,10 @@
 package zpi.entity;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
@@ -14,15 +14,12 @@ public class Attraction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "attraction_id")
     private Integer id;
-
     @ManyToOne
     @JoinColumn(name = "district_id", referencedColumnName = "district_id")
     private District district;
-
     @ManyToOne
     @JoinColumn(name = "city_id", referencedColumnName = "city_id")
     private City city;
-
     @ManyToOne
     @NotNull(message = "AttractionType cannot be null")
     @JoinColumn(name = "type_id", referencedColumnName = "type_id")

@@ -10,8 +10,14 @@ import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
 import zpi.dto.AttractionPictureDto;
 import zpi.dto.NewAttractionDto;
-import zpi.entity.*;
-import zpi.repository.*;
+import zpi.entity.Attraction;
+import zpi.entity.AttractionType;
+import zpi.entity.City;
+import zpi.entity.District;
+import zpi.repository.AttractionRepository;
+import zpi.repository.AttractionTypeRepository;
+import zpi.repository.CityRepository;
+import zpi.repository.DistrictRepository;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -70,11 +76,13 @@ public class AttractionServiceImpl implements AttractionService {
 
     @Override
     public AttractionDto getAttractionById(Integer attractionId) {
-        Optional<Attraction> attraction = attractionRepository.findById(attractionId);
+        Optional<Attraction> attraction =
+                attractionRepository.findById(attractionId);
         if (attraction.isPresent()) {
             return new AttractionDto(attraction.get());
         } else {
-            throw new EntityNotFoundException("Attraction not found for ID: " + attractionId);
+            throw new EntityNotFoundException
+                    ("Attraction not found for ID: " + attractionId);
         }
     }
 

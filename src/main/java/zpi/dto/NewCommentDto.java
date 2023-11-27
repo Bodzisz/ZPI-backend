@@ -1,4 +1,4 @@
 package zpi.dto;
 
-public record NewCommentDto(Integer userId, Integer attractionId, String comment) {
+public record NewCommentDto(String login, Integer attractionId, String comment) {
 }

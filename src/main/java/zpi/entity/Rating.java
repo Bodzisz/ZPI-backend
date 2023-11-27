@@ -9,24 +9,19 @@ import java.time.LocalDateTime;
 @Data
 @Table(name = "ratings")
 public class Rating {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rating_id")
     private Integer id;
-
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JoinColumn(name = "user_id")
     private User user;
-
     @ManyToOne
-    @JoinColumn(name = "attraction_id", referencedColumnName = "attraction_id")
+    @JoinColumn(name = "attraction_id")
     private Attraction attraction;
-
     @Column(name = "rating", nullable = false)
     private Integer rating;
-
-    @Column(name = "created_at", insertable = false, updatable = false)
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     public Rating() {

@@ -16,6 +16,8 @@ import zpi.dto.AuthenticationResponse;
 import zpi.entity.User;
 import zpi.service.UserService;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -31,10 +33,10 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.login(), request.password()));
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.login());
-        if(userDetails != null) {
-            User user = userService.getByLogin(request.login());
+        Optional<User> user = userService.getByLogin(request.login());
+        if (userDetails != null && user.isPresent()) {
             return ResponseEntity.ok(new AuthenticationResponse(jwtUtils.generateToken(userDetails), userDetails.getUsername(),
-                    user.getFirstName(), user.getLastName(), user.getRole()));
+                    user.get().getFirstName(), user.get().getLastName(), user.get().getRole()));
         }
         return ResponseEntity.status(400).build();
     }

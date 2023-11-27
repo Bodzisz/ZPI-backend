@@ -24,7 +24,7 @@ public class CommentService {
     private final UserRepository userRepository;
 
     public CommentDto createComment(NewCommentDto newCommentDto) {
-        User user = userRepository.findById(newCommentDto.userId()).orElseThrow(()
+        User user = userRepository.findByLogin(newCommentDto.login()).orElseThrow(()
                 -> new RuntimeException("User not found"));
         Attraction attraction = attractionRepository.findById(newCommentDto.attractionId()).orElseThrow(()
                 -> new RuntimeException("Attraction not found"));
@@ -51,11 +51,10 @@ public class CommentService {
     }
 
     public CommentDto updateComment(Integer id, NewCommentDto newCommentDto) {
-        User user = userRepository.findById(newCommentDto.userId()).orElseThrow(()
+        User user = userRepository.findByLogin(newCommentDto.login()).orElseThrow(()
                 -> new RuntimeException("User not found"));
         Attraction attraction = attractionRepository.findById(newCommentDto.attractionId()).orElseThrow(()
                 -> new RuntimeException("Attraction not found"));
-
         return new CommentDto(commentRepository.save(
                 new Comment(id, user, attraction, newCommentDto.comment(), LocalDateTime.now())));
     }

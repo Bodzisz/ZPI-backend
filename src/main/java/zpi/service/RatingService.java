@@ -24,7 +24,7 @@ public class RatingService {
     private final UserRepository userRepository;
 
     public RatingDto createRating(NewRatingDto newRatingDto) {
-        User user = userRepository.findById(newRatingDto.userId()).orElseThrow(()
+        User user = userRepository.findByLogin(newRatingDto.login()).orElseThrow(()
                 -> new RuntimeException("User not found"));
         Attraction attraction = attractionRepository.findById(newRatingDto.attractionId()).orElseThrow(()
                 -> new RuntimeException("Attraction not found"));
@@ -33,8 +33,10 @@ public class RatingService {
             throw new IllegalArgumentException("Ranting must be between 1 and 5");
         }
 
-        return new RatingDto(ratingRepository.save(
-                new Rating(user, attraction, newRatingDto.rating(), LocalDateTime.now())));
+        Optional<Rating> optionalRating = ratingRepository.getRatingByAttractionIdAndUserId(attraction.getId(), user.getId());
+        return optionalRating.isPresent() ? updateRating(optionalRating.get().getId(), newRatingDto) :
+                new RatingDto(ratingRepository.save(
+                        new Rating(user, attraction, newRatingDto.rating(), LocalDateTime.now())));
     }
 
     public RatingDto getRatingById(Integer id) {
@@ -70,7 +72,7 @@ public class RatingService {
             throw new IllegalArgumentException("Ranting must be greater than 0 and smaller than 6!");
         }
 
-        User user = userRepository.findById(newRatingDto.userId()).orElseThrow(()
+        User user = userRepository.findByLogin(newRatingDto.login()).orElseThrow(()
                 -> new RuntimeException("User not found"));
         Attraction attraction = attractionRepository.findById(newRatingDto.attractionId()).orElseThrow(()
                 -> new RuntimeException("Attraction not found"));
