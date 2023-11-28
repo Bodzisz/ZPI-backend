@@ -14,6 +14,7 @@ public class AttractionDto {
     private String attractionType;
     private String title;
     private String description;
+    private String postalCode;
     private byte[] picture;
     private Float xCoordinate;
     private Float yCoordinate;
@@ -28,6 +29,7 @@ public class AttractionDto {
         City city = attraction.getCity();
         if (city != null) {
             this.city = city.getCityName();
+            this.postalCode = city.getPostalCode();
         }
         District district = attraction
                 .getDistrict();

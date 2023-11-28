@@ -53,16 +53,14 @@ public class AttractionServiceImpl implements AttractionService {
 
     @Override
     public AttractionDto updateAttraction(NewAttractionDto newAttractionDto, Integer attractionId) {
-        if (!attractionRepository.existsById(attractionId)) {
-            throw new EntityNotFoundException("Attraction not found for ID: " + attractionId);
-        }
+        final AttractionDto attraction = getAttractionById(attractionId);
 
         City city = addCityIfNotExists(newAttractionDto.cityName(), newAttractionDto.postalCode());
         AttractionType attractionType = addAttractionTypeIfNotExists(newAttractionDto.attractionType());
         District district = addDistrictIfNotExists(newAttractionDto.district());
 
         return new AttractionDto(attractionRepository.save(new Attraction(attractionId, district, city, newAttractionDto.title(),
-                attractionType, newAttractionDto.description(), Base64.getDecoder().decode(newAttractionDto.picture()),
+                attractionType, newAttractionDto.description(), newAttractionDto.picture() == null? attraction.getPicture() : Base64.getDecoder().decode(newAttractionDto.picture()),
                 newAttractionDto.xCoordinate(), newAttractionDto.yCoordinate())));
     }
 
