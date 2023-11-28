@@ -6,6 +6,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import zpi.dto.AttractionDto;
 import zpi.dto.AttractionLocationDto;
 import zpi.dto.AttractionPictureDto;
@@ -14,10 +15,7 @@ import zpi.entity.Attraction;
 import zpi.entity.AttractionType;
 import zpi.entity.City;
 import zpi.entity.District;
-import zpi.repository.AttractionRepository;
-import zpi.repository.AttractionTypeRepository;
-import zpi.repository.CityRepository;
-import zpi.repository.DistrictRepository;
+import zpi.repository.*;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -34,6 +32,8 @@ public class AttractionServiceImpl implements AttractionService {
     private final CityRepository cityRepository;
     private final AttractionTypeRepository attractionTypeRepository;
     private final DistrictRepository districtRepository;
+    private final RatingRepository ratingRepository;
+    private final CommentsRepository commentsRepository;
 
     @Override
     public AttractionDto createAttraction(NewAttractionDto newAttractionDto) {
@@ -53,24 +53,25 @@ public class AttractionServiceImpl implements AttractionService {
 
     @Override
     public AttractionDto updateAttraction(NewAttractionDto newAttractionDto, Integer attractionId) {
-        if (!attractionRepository.existsById(attractionId)) {
-            throw new EntityNotFoundException("Attraction not found for ID: " + attractionId);
-        }
+        final AttractionDto attraction = getAttractionById(attractionId);
 
         City city = addCityIfNotExists(newAttractionDto.cityName(), newAttractionDto.postalCode());
         AttractionType attractionType = addAttractionTypeIfNotExists(newAttractionDto.attractionType());
         District district = addDistrictIfNotExists(newAttractionDto.district());
 
         return new AttractionDto(attractionRepository.save(new Attraction(attractionId, district, city, newAttractionDto.title(),
-                attractionType, newAttractionDto.description(), Base64.getDecoder().decode(newAttractionDto.picture()),
+                attractionType, newAttractionDto.description(), newAttractionDto.picture() == null? attraction.getPicture() : Base64.getDecoder().decode(newAttractionDto.picture()),
                 newAttractionDto.xCoordinate(), newAttractionDto.yCoordinate())));
     }
 
+    @Transactional
     @Override
     public void deleteAttractionById(Integer attractionId) {
         if (!attractionRepository.existsById(attractionId)) {
             throw new EntityNotFoundException("Attraction not found for ID: " + attractionId);
         }
+        commentsRepository.deleteAllByAttractionId(attractionId);
+        ratingRepository.deleteAllByAttractionId(attractionId);
         attractionRepository.deleteById(attractionId);
     }
 

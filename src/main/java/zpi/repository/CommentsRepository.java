@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface CommentsRepository extends JpaRepository<Comment, Integer> {
     List<Comment> getAllByAttractionId(Integer attractionId);
+
+    void deleteAllByAttractionId(Integer attractionId);
 }
