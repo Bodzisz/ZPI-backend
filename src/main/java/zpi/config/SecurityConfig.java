@@ -36,7 +36,7 @@ public class SecurityConfig {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(false);
-        config.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://localhost:5173"));
+        config.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://localhost:5173", "https://miejscownik-frontend-8r4uk.ondigitalocean.app"));
         config.addAllowedHeader("*");
         config.addExposedHeader("Authorization");
         config.setAllowedMethods(Arrays.asList("HEAD", "GET", "PUT", "POST", "DELETE", "OPTION", "PATCH"));
