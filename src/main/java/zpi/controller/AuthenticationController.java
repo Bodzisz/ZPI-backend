@@ -2,14 +2,12 @@ package zpi.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import zpi.config.JwtUtils;
 import zpi.dto.AuthenticationRequest;
 import zpi.dto.AuthenticationResponse;
@@ -39,5 +37,11 @@ public class AuthenticationController {
                     user.get().getFirstName(), user.get().getLastName(), user.get().getRole()));
         }
         return ResponseEntity.status(400).build();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/check")
+    public ResponseEntity<Void> isAuthenticated() {
+        return ResponseEntity.status(204).build();
     }
 }
