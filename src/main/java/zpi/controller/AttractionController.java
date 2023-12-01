@@ -7,10 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import zpi.dto.AttractionDto;
-import zpi.dto.AttractionLocationDto;
-import zpi.dto.AttractionPictureDto;
-import zpi.dto.NewAttractionDto;
+import zpi.dto.*;
 import zpi.entity.AttractionType;
 import zpi.entity.City;
 import zpi.entity.District;
@@ -19,7 +16,6 @@ import zpi.service.AttractionService;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,6 +58,12 @@ public class AttractionController {
         return new ResponseEntity<>(attraction, HttpStatus.OK);
     }
 
+    @GetMapping("/getWithRating/{id}")
+    public ResponseEntity<AttractionWithRatingDto> getAttractionWithRatingById(@PathVariable("id") Integer attractionId) {
+        AttractionWithRatingDto attraction = attractionService.getAttractionWithRatingById(attractionId);
+        return new ResponseEntity<>(attraction, HttpStatus.OK);
+    }
+
     @GetMapping("/{id}/location")
     public ResponseEntity<AttractionLocationDto> getAttractionLocationById(@PathVariable("id") Integer attractionId) {
         AttractionLocationDto attraction = attractionService.getAttractionLocation(attractionId);
@@ -91,8 +93,22 @@ public class AttractionController {
             @RequestParam(required = false) List<String> types,
             Pageable pageable) {
 
-        Page<AttractionDto> attractions = attractionService
-                .getAttractionsWithFilter(titles, cities, districts, types, pageable);
+        Page<AttractionDto> attractions = attractionService.getAttractionsWithFilter(titles, cities, districts, types, pageable);
+
+        return attractions.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                : new ResponseEntity<>(attractions, HttpStatus.OK);
+    }
+
+    @GetMapping("/listWithRating")
+    public ResponseEntity<Page<AttractionWithRatingDto>> listAttractionsWithRating(
+            @RequestParam(required = false) List<String> titles,
+            @RequestParam(required = false) List<String> cities,
+            @RequestParam(required = false) List<String> districts,
+            @RequestParam(required = false) List<String> types,
+            Pageable pageable) {
+
+        Page<AttractionWithRatingDto> attractions = attractionService
+                .getAttractionsWithFilterSortedByRating(titles, cities, districts, types, pageable);
 
         return attractions.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
                 : new ResponseEntity<>(attractions, HttpStatus.OK);

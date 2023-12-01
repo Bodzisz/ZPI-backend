@@ -1,12 +1,12 @@
 package zpi.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import zpi.dto.NewRatingDto;
 import zpi.dto.RatingDto;
 import zpi.service.RatingService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class RatingController {
 
     @GetMapping("/attraction/{attractionId}/attractionRating")
     public ResponseEntity<Double> getRateForAttractionId(@PathVariable Integer attractionId) {
-        return ResponseEntity.ok(ratingService.getRateForAttraction(attractionId));
+        return ResponseEntity.ok(ratingService.getAvgRateForAttraction(attractionId));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")

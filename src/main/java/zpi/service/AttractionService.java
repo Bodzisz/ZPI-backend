@@ -2,17 +2,13 @@ package zpi.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import zpi.dto.AttractionDto;
-import zpi.dto.AttractionLocationDto;
-import zpi.dto.AttractionPictureDto;
-import zpi.dto.NewAttractionDto;
+import zpi.dto.*;
 import zpi.entity.AttractionType;
 import zpi.entity.City;
 import zpi.entity.District;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public interface AttractionService {
 
@@ -47,4 +43,12 @@ public interface AttractionService {
     District addDistrictIfNotExists(String districtName);
 
     List<AttractionType> getAllAttractionTypes();
+
+    AttractionWithRatingDto getAttractionWithRatingById(Integer attractionId);
+
+    Page<AttractionWithRatingDto> getAttractionsWithFilterSortedByRating(List<String> titles,
+                                                                         List<String> cities,
+                                                                         List<String> districts,
+                                                                         List<String> types,
+                                                                         Pageable pageable);
 }
