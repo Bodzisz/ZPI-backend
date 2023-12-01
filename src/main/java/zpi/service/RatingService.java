@@ -56,7 +56,7 @@ public class RatingService {
         return ratingRepository.getAllByAttractionId(attractionId).stream().map(RatingDto::new).toList();
     }
 
-    public double getRateForAttraction(Integer attractionId) {
+    public double getAvgRateForAttraction(Integer attractionId) {
         return ratingRepository.getAllByAttractionId(attractionId)
                 .stream().map(Rating::getRating)
                 .mapToDouble(Integer::doubleValue)

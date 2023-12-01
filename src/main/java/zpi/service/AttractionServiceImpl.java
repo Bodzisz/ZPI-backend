@@ -7,10 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import zpi.dto.AttractionDto;
-import zpi.dto.AttractionLocationDto;
-import zpi.dto.AttractionPictureDto;
-import zpi.dto.NewAttractionDto;
+import zpi.dto.*;
 import zpi.entity.Attraction;
 import zpi.entity.AttractionType;
 import zpi.entity.City;
@@ -28,6 +25,7 @@ import static zpi.Utils.PaginationUtils.convertToPage;
 public class AttractionServiceImpl implements AttractionService {
 
     private static final int DEFAULT_RANDOM_ATTRACTIONS_SIZE = 10;
+    private final RatingService ratingService;
     private final AttractionRepository attractionRepository;
     private final CityRepository cityRepository;
     private final AttractionTypeRepository attractionTypeRepository;
@@ -60,7 +58,7 @@ public class AttractionServiceImpl implements AttractionService {
         District district = addDistrictIfNotExists(newAttractionDto.district());
 
         return new AttractionDto(attractionRepository.save(new Attraction(attractionId, district, city, newAttractionDto.title(),
-                attractionType, newAttractionDto.description(), newAttractionDto.picture() == null? attraction.getPicture() : Base64.getDecoder().decode(newAttractionDto.picture()),
+                attractionType, newAttractionDto.description(), newAttractionDto.picture() == null ? attraction.getPicture() : Base64.getDecoder().decode(newAttractionDto.picture()),
                 newAttractionDto.xCoordinate(), newAttractionDto.yCoordinate())));
     }
 
@@ -86,6 +84,19 @@ public class AttractionServiceImpl implements AttractionService {
                     ("Attraction not found for ID: " + attractionId);
         }
     }
+
+    @Override
+    public AttractionWithRatingDto getAttractionWithRatingById(Integer attractionId) {
+        Optional<Attraction> attraction =
+                attractionRepository.findById(attractionId);
+        if (attraction.isPresent()) {
+            return new AttractionWithRatingDto(attraction.get(), ratingService.getAvgRateForAttraction(attractionId));
+        } else {
+            throw new EntityNotFoundException
+                    ("Attraction not found for ID: " + attractionId);
+        }
+    }
+
 
     @Override
     public List<AttractionDto> getRandomAttractions(Optional<Integer> size) {
@@ -197,6 +208,51 @@ public class AttractionServiceImpl implements AttractionService {
         } else {
             throw new EntityNotFoundException("Attraction not found for ID: " + attractionId);
         }
+    }
+
+    @Override
+    public Page<AttractionWithRatingDto> getAttractionsWithFilterSortedByRating(List<String> titles,
+                                                                                List<String> cities,
+                                                                                List<String> districts,
+                                                                                List<String> types,
+                                                                                Pageable pageable) {
+
+        Predicate<Attraction> titlePredicate = attraction ->
+                (titles == null || titles.isEmpty()) || titles.stream().anyMatch((title) -> attraction.getTitle().toLowerCase().contains(title.toLowerCase()));
+
+        Predicate<Attraction> cityPredicate = attraction ->
+                (cities == null || cities.isEmpty()) || cities.stream().anyMatch((city) -> attraction.getCity().getCityName().toLowerCase().contains(city.toLowerCase()));
+
+        Predicate<Attraction> districtPredicate = attraction ->
+                (districts == null || districts.isEmpty()) || districts.contains(attraction.getDistrict().getDistrictName());
+
+        Predicate<Attraction> typePredicate = attraction ->
+                (types == null || types.isEmpty()) || types.contains(attraction.getAttractionType().getAttractionType());
+
+        Predicate<Attraction> combinedPredicate = titlePredicate.and(cityPredicate).and(districtPredicate).and(typePredicate);
+
+        List<Attraction> filteredAttractions = attractionRepository.findAll()
+                .stream()
+                .filter(combinedPredicate)
+                .collect(Collectors.toList());
+
+        Map<Attraction, Double> attractionRatings = calculateAverageRatings(filteredAttractions);
+
+        List<AttractionWithRatingDto> sortedAttractions = filteredAttractions.stream()
+                .sorted(Comparator.comparing((Attraction attraction) ->
+                        attractionRatings.getOrDefault(attraction, 0.0)).reversed())
+                .map(attraction -> new AttractionWithRatingDto(attraction,
+                        attractionRatings.getOrDefault(attraction, 0.0)))
+                .collect(Collectors.toList());
+
+        return convertToPage(sortedAttractions, pageable);
+    }
+
+    private Map<Attraction, Double> calculateAverageRatings(List<Attraction> attractions) {
+        Map<Attraction, Double> ratings = new HashMap<>();
+        attractions.forEach(attraction ->
+                ratings.put(attraction, ratingService.getAvgRateForAttraction(attraction.getId())));
+        return ratings;
     }
 
     public double convertToKilometers(double distance) {
