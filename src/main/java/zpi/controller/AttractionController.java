@@ -91,9 +91,11 @@ public class AttractionController {
             @RequestParam(required = false) List<String> cities,
             @RequestParam(required = false) List<String> districts,
             @RequestParam(required = false) List<String> types,
+            @RequestParam(required = false) boolean sortedByName,
             Pageable pageable) {
 
-        Page<AttractionDto> attractions = attractionService.getAttractionsWithFilter(titles, cities, districts, types, pageable);
+        Page<AttractionDto> attractions = attractionService
+                .getAttractionsWithFilter(titles, cities, districts, types, sortedByName, pageable);
 
         return attractions.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
                 : new ResponseEntity<>(attractions, HttpStatus.OK);

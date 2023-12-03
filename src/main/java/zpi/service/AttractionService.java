@@ -32,7 +32,7 @@ public interface AttractionService {
     AttractionPictureDto getAttractionPicture(Integer attractionId);
 
     Page<AttractionDto> getAttractionsWithFilter(List<String> titles, List<String> cities, List<String> districts,
-                                                 List<String> types, Pageable pageable);
+                                                 List<String> types, boolean sortedByName, Pageable pageable);
 
     double getDistanceToAttraction(Integer attractionId, Float xCoordinate, Float yCoordinate);
 

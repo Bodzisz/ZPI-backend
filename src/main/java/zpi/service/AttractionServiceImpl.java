@@ -173,6 +173,7 @@ public class AttractionServiceImpl implements AttractionService {
                                                         List<String> cities,
                                                         List<String> districts,
                                                         List<String> types,
+                                                        boolean sortedByName,
                                                         Pageable pageable) {
 
         Predicate<Attraction> titlePredicate = attraction ->
@@ -188,6 +189,20 @@ public class AttractionServiceImpl implements AttractionService {
                 (types == null || types.isEmpty()) || types.contains(attraction.getAttractionType().getAttractionType());
 
         Predicate<Attraction> combinedPredicate = titlePredicate.and(cityPredicate).and(districtPredicate).and(typePredicate);
+
+        if (sortedByName) {
+            List<Attraction> filteredAttractions = attractionRepository.findAll()
+                    .stream()
+                    .filter(combinedPredicate)
+                    .toList();
+
+            List<Attraction> sortedAttractions = filteredAttractions.stream()
+                    .sorted(Comparator.comparing(Attraction::getTitle))
+                    .collect(Collectors.toList());
+
+            return convertToPage(sortedAttractions, pageable)
+                    .map(AttractionDto::new);
+        }
 
         return convertToPage(attractionRepository.findAll()
                 .stream()
